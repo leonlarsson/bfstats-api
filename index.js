@@ -17,18 +17,22 @@ async function handleRequest(request) {
         // If API-KEY is valid
 
         const totalGuilds = request.headers.get("TOTAL-GUILDS");
-        const totalUsers = request.headers.get("TOTAL-USERS");
+        const totalChannels = request.headers.get("TOTAL-CHANNELS");
+        const totalMembers = request.headers.get("TOTAL-MEMBERS");
 
-        // If one or both headers are not present or are not integers, return
-        if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalUsers && !Number.isInteger(Number.parseInt(totalUsers))) {
-            return new Response(`Header value ${totalGuilds} (TOTAL-GUILDS) or ${totalUsers} (TOTAL-USERS) is not an integer`, { headers: { "Content-Type": "text/plain" }, status: 400 });
+        // If a header is present, but not an integer
+        if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalChannels && !Number.isInteger(Number.parseInt(totalChannels)) && totalMembers && !Number.isInteger(Number.parseInt(totalMembers))) {
+            return new Response(`Header value ${totalGuilds} (TOTAL-GUILDS) or ${totalChannels} (TOTAL-CHANNELS) or ${totalMembers} (TOTAL-MEMBERS) is not an integer`, { headers: { "Content-Type": "text/plain" }, status: 400 });
         }
 
         // If TOTAL-GUILDS header is present, and is an integer, put to KV
         if (totalGuilds) await DATA.put("TOTAL_GUILDS", Number.parseInt(totalGuilds));
 
-        // If TOTAL-USERS header is present, and is an integer, put to KV
-        if (totalUsers) await DATA.put("TOTAL_USERS", Number.parseInt(totalUsers));
+        // If TOTAL-CHANNELS header is present, and is an integer, put to KV
+        if (totalChannels) await DATA.put("TOTAL_CHANNELS", Number.parseInt(totalChannels));
+
+        // If TOTAL-MEMBERS header is present, and is an integer, put to KV
+        if (totalMembers) await DATA.put("TOTAL_MEMBERS", Number.parseInt(totalMembers));
 
         // Add last updated KV
         await DATA.put("LAST_UPDATED", new Date().toUTCString());
@@ -43,9 +47,10 @@ async function handleRequest(request) {
 
         const lastUpdated = await DATA.get("LAST_UPDATED");
         const totalGuilds = Number.parseInt(await DATA.get("TOTAL_GUILDS"));
-        const totalUsers = Number.parseInt(await DATA.get("TOTAL_USERS"));
+        const totalChannels = Number.parseInt(await DATA.get("TOTAL_CHANNELS"));
+        const totalMembers = Number.parseInt(await DATA.get("TOTAL_MEMBERS"));
 
-        return new Response(JSON.stringify({ lastUpdated, totalGuilds, totalUsers }), {
+        return new Response(JSON.stringify({ lastUpdated, totalGuilds, totalChannels, totalMembers }), {
             headers: { "Content-Type": "application/json" },
             status: 200
         });
