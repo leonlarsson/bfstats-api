@@ -14,22 +14,21 @@ async function handleRequest(request) {
             });
         }
 
+        // If API-KEY is valid
+
         const totalGuilds = request.headers.get("TOTAL-GUILDS");
         const totalUsers = request.headers.get("TOTAL-USERS");
 
-        // If API-KEY is valid
+        // If one or both headers are not present or are not integers, return
+        if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalUsers && !Number.isInteger(Number.parseInt(totalUsers))) {
+            return new Response(`Header value ${totalGuilds} (TOTAL-GUILDS) or ${totalUsers} (TOTAL-USERS) is not an integer`, { headers: { "Content-Type": "text/plain" }, status: 400 });
+        }
 
         // If TOTAL-GUILDS header is present, and is an integer, put to KV
-        if (totalGuilds) {
-            if (!Number.isInteger(Number.parseInt(totalGuilds))) return new Response(`Value ${totalGuilds} for TOTAL-GUILDS is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
-            await DATA.put("TOTAL_GUILDS", Number.parseInt(totalGuilds));
-        }
+        if (totalGuilds) await DATA.put("TOTAL_GUILDS", Number.parseInt(totalGuilds));
 
         // If TOTAL-USERS header is present, and is an integer, put to KV
-        if (totalUsers) {
-            if (!Number.isInteger(Number.parseInt(totalUsers))) return new Response(`Value ${totalUsers} for TOTAL-USERS is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
-            await DATA.put("TOTAL_USERS", Number.parseInt(totalUsers));
-        }
+        if (totalUsers) await DATA.put("TOTAL_USERS", Number.parseInt(totalUsers));
 
         // Add last updated KV
         await DATA.put("LAST_UPDATED", new Date().toUTCString());
