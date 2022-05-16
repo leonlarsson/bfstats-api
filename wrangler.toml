@@ -1,0 +1,7 @@
+name = "bfstats"
+main = "./index.js"
+compatibility_date = "2022-05-16"
+
+kv_namespaces = [
+  { binding = "DATA", id = "c53bec558ffc4485b49260392e1adab2" }
+]
