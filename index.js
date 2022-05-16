@@ -33,7 +33,7 @@ async function handleRequest(request) {
 
         // Add last updated KV
         const date = new Date();
-        await DATA.put("LAST_UPDATED", JSON.stringify({ date: new Date().toUTCString(), timestampMiliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) }));
+        await DATA.put("LAST_UPDATED", JSON.stringify({ date: new Date().toUTCString(), timestampMilliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) }));
 
         return new Response("Data posted.", {
             headers: { "Content-Type": "text/plain" },
