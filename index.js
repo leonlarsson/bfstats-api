@@ -39,8 +39,8 @@ async function handleRequest(request) {
 
     if (request.method === "GET") {
 
-        const totalGuilds = await DATA.get("TOTAL_GUILDS");
-        const totalUsers = await DATA.get("TOTAL_USERS");
+        const totalGuilds = Number.parseInt(await DATA.get("TOTAL_GUILDS"));
+        const totalUsers = Number.parseInt(await DATA.get("TOTAL_USERS"));
 
         return new Response(JSON.stringify({ totalGuilds, totalUsers }), {
             headers: { "Content-Type": "application/json" },
