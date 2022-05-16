@@ -1,8 +1,5 @@
 {
-  "name": "bfstats",
-  "version": "0.0.0",
-  "devDependencies": {
-    "wrangler": "2.0.5"
-  },
+  "name": "bfstats-api",
+  "version": "1.0.0",
   "private": true
 }
