@@ -14,15 +14,11 @@ async function handleRequest(request) {
             });
         }
 
-        // If API-KEY is valid
-
-        const totalGuilds = request.headers.get("TOTAL-GUILDS");
-        const totalChannels = request.headers.get("TOTAL-CHANNELS");
-        const totalMembers = request.headers.get("TOTAL-MEMBERS");
+        const { totalGuilds, totalChannels, totalMembers } = await request.json();
 
         // If a header is present, but not an integer
         if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalChannels && !Number.isInteger(Number.parseInt(totalChannels)) && totalMembers && !Number.isInteger(Number.parseInt(totalMembers))) {
-            return new Response(`Header value ${totalGuilds} (TOTAL-GUILDS) or ${totalChannels} (TOTAL-CHANNELS) or ${totalMembers} (TOTAL-MEMBERS) is not an integer`, { headers: { "Content-Type": "text/plain" }, status: 400 });
+            return new Response(`Value ${totalGuilds} (totalGuilds) or ${totalChannels} (totalChannels) or ${totalMembers} (totalChannels) is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
         }
 
         // If TOTAL-GUILDS header is present, and is an integer, put to KV
