@@ -31,6 +31,9 @@ async function handleRequest(request) {
             await DATA.put("TOTAL_USERS", Number.parseInt(totalUsers));
         }
 
+        // Add last updated KV
+        await DATA.put("LAST_UPDATED", new Date().toUTCString());
+
         return new Response("Data posted", {
             headers: { "Content-Type": "text/plain" },
             status: 200
@@ -39,10 +42,11 @@ async function handleRequest(request) {
 
     if (request.method === "GET") {
 
+        const lastUpdated = await DATA.get("LAST_UPDATED");
         const totalGuilds = Number.parseInt(await DATA.get("TOTAL_GUILDS"));
         const totalUsers = Number.parseInt(await DATA.get("TOTAL_USERS"));
 
-        return new Response(JSON.stringify({ totalGuilds, totalUsers }), {
+        return new Response(JSON.stringify({ lastUpdated, totalGuilds, totalUsers }), {
             headers: { "Content-Type": "application/json" },
             status: 200
         });
