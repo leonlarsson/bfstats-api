@@ -21,13 +21,13 @@ async function handleRequest(request) {
 
         // If TOTAL-GUILDS header is present, and is an integer, put to KV
         if (totalGuilds) {
-            if (!Number.parseInt(totalGuilds)) return new Response(`Value ${totalGuilds} for TOTAL-GUILDS is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
+            if (!Number.isInteger(Number.parseInt(totalGuilds))) return new Response(`Value ${totalGuilds} for TOTAL-GUILDS is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
             await DATA.put("TOTAL_GUILDS", Number.parseInt(totalGuilds));
         }
 
         // If TOTAL-USERS header is present, and is an integer, put to KV
         if (totalUsers) {
-            if (!Number.parseInt(totalUsers)) return new Response(`Value ${totalUsers} for TOTAL-USERS is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
+            if (!Number.isInteger(Number.parseInt(totalUsers))) return new Response(`Value ${totalUsers} for TOTAL-USERS is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
             await DATA.put("TOTAL_USERS", Number.parseInt(totalUsers));
         }
 
