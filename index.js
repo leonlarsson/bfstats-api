@@ -8,7 +8,7 @@ async function handleRequest(request) {
 
         // IF API-KEY is not correct, return
         if (request.headers.get("API-KEY") !== API_KEY) {
-            return new Response("No valid API key found.", {
+            return new Response("No valid API key in request.", {
                 headers: { "Content-Type": "text/plain" },
                 status: 401
             });
@@ -20,21 +20,16 @@ async function handleRequest(request) {
             return {};
         });
 
-        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": Integer, "totalChannels": Integer, "totalMembers": Integer }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
-
-        // If a value is present, but not an integer, return error
-        if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalChannels && !Number.isInteger(Number.parseInt(totalChannels)) && totalMembers && !Number.isInteger(Number.parseInt(totalMembers))) {
-            return new Response(`Value ${totalGuilds} (totalGuilds) or ${totalChannels} (totalChannels) or ${totalMembers} (totalMembers) is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
-        }
+        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3 }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
 
         // If totalGuilds is present, and is an integer, put to KV
-        if (totalGuilds) await DATA.put("TOTAL_GUILDS", Number.parseInt(totalGuilds));
+        if (totalGuilds) await DATA.put("TOTAL_GUILDS", totalGuilds);
 
         // If totalChannels is present, and is an integer, put to KV
-        if (totalChannels) await DATA.put("TOTAL_CHANNELS", Number.parseInt(totalChannels));
+        if (totalChannels) await DATA.put("TOTAL_CHANNELS", totalChannels);
 
         // If totalMembers is present, and is an integer, put to KV
-        if (totalMembers) await DATA.put("TOTAL_MEMBERS", Number.parseInt(totalMembers));
+        if (totalMembers) await DATA.put("TOTAL_MEMBERS", totalMembers);
 
         // Add last updated KV
         const date = new Date();
