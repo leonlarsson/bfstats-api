@@ -19,7 +19,7 @@ async function handleRequest(request) {
 
         // If a value is present, but not an integer, return error
         if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalChannels && !Number.isInteger(Number.parseInt(totalChannels)) && totalMembers && !Number.isInteger(Number.parseInt(totalMembers))) {
-            return new Response(`Value ${totalGuilds} (totalGuilds) or ${totalChannels} (totalChannels) or ${totalMembers} (totalChannels) is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
+            return new Response(`Value ${totalGuilds} (totalGuilds) or ${totalChannels} (totalChannels) or ${totalMembers} (totalMembers) is not an integer.`, { headers: { "Content-Type": "text/plain" }, status: 400 });
         }
 
         // If totalGuilds is present, and is an integer, put to KV
