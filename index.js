@@ -20,7 +20,7 @@ async function handleRequest(request) {
             return {};
         });
 
-        if (invalidBody) return new Response("Invalid body. Please make sure the body is there and is valid JSON.", { headers: { "Content-Type": "text/plain" }, status: 400 });
+        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": Integer, "totalChannels": Integer, "totalMembers": Integer }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
 
         // If a value is present, but not an integer, return error
         if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalChannels && !Number.isInteger(Number.parseInt(totalChannels)) && totalMembers && !Number.isInteger(Number.parseInt(totalMembers))) {
