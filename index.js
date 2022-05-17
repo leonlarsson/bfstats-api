@@ -22,16 +22,12 @@ async function handleRequest(request) {
 
         if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3 }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
 
-        // If totalGuilds is present, and is an integer, put to KV
+        // Add values to KV
         if (totalGuilds) await DATA.put("TOTAL_GUILDS", totalGuilds);
-
-        // If totalChannels is present, and is an integer, put to KV
         if (totalChannels) await DATA.put("TOTAL_CHANNELS", totalChannels);
-
-        // If totalMembers is present, and is an integer, put to KV
         if (totalMembers) await DATA.put("TOTAL_MEMBERS", totalMembers);
 
-        // Add last updated KV
+        // Add lastUpdated to KV
         const date = new Date();
         await DATA.put("LAST_UPDATED", JSON.stringify({ date: new Date().toUTCString(), timestampMilliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) }));
 
