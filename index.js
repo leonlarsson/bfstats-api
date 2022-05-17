@@ -14,8 +14,13 @@ async function handleRequest(request) {
             });
         }
 
-        // TODO: Deal with empty body?
-        const { totalGuilds, totalChannels, totalMembers } = await request.json();
+        let invalidBody = false;
+        const { totalGuilds, totalChannels, totalMembers } = await request.json().catch(() => {
+            invalidBody = true;
+            return {};
+        });
+
+        if (invalidBody) return new Response("Invalid body. Please make sure the body is there and is valid JSON.", { headers: { "Content-Type": "text/plain" }, status: 400 });
 
         // If a value is present, but not an integer, return error
         if (totalGuilds && !Number.isInteger(Number.parseInt(totalGuilds)) || totalChannels && !Number.isInteger(Number.parseInt(totalChannels)) && totalMembers && !Number.isInteger(Number.parseInt(totalMembers))) {
