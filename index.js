@@ -22,37 +22,33 @@ async function handleRequest(request) {
 
         if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3, "incrementTotalStatsSent": true }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
 
-        // Add values to KV
-        // TODO: Make this one .put() with a single json string
-        if (Number.isInteger(totalGuilds)) await DATA.put("TOTAL_GUILDS", totalGuilds);
-        if (Number.isInteger(totalChannels)) await DATA.put("TOTAL_CHANNELS", totalChannels);
-        if (Number.isInteger(totalMembers)) await DATA.put("TOTAL_MEMBERS", totalMembers);
-
-        // If incrementTotalStatsSent is true, increment TOTAL_STATS_SENT by 1
+        // Get the KV STATS object and edit it accordingly, before .put()ing it back
+        const statsObject = await DATA.get("STATS", { type: "json" });
+        if (Number.isInteger(totalGuilds)) statsObject.totalGuilds = totalGuilds;
+        if (Number.isInteger(totalChannels)) statsObject.totalChannels = totalChannels;
+        if (Number.isInteger(totalMembers)) statsObject.totalMembers = totalMembers;
         if (incrementTotalStatsSent === true) {
-            const totalStatsSent = parseInt(await DATA.get("TOTAL_STATS_SENT"));
-            await DATA.put("TOTAL_STATS_SENT", totalStatsSent + 1);
+            const totalStatsSent = parseInt(statsObject.totalStatsSent);
+            if (Number.isInteger(totalStatsSent)) statsObject.totalStatsSent += 1;
         }
 
-        // Add lastUpdated to KV
+        // Add lastUpdated to the object
         const date = new Date();
-        await DATA.put("LAST_UPDATED", JSON.stringify({ date: new Date().toUTCString(), timestampMilliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) }));
+        statsObject.lastUpdated = { date: date.toUTCString(), timestampMilliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) };
 
-        return new Response("Data posted.", {
-            headers: { "Content-Type": "text/plain" },
+        // .put() the edited object
+        await DATA.put("STATS", JSON.stringify(statsObject));
+
+        return new Response(JSON.stringify({ message: "Data posted to KV.", statsObject }), {
+            headers: { "Content-Type": "application/json" },
             status: 200
         });
     }
 
     if (request.method === "GET") {
 
-        const { date, timestampMilliseconds, timestampSeconds } = JSON.parse(await DATA.get("LAST_UPDATED"));
-        const totalGuilds = parseInt(await DATA.get("TOTAL_GUILDS"));
-        const totalChannels = parseInt(await DATA.get("TOTAL_CHANNELS"));
-        const totalMembers = parseInt(await DATA.get("TOTAL_MEMBERS"));
-        const totalStatsSent = parseInt(await DATA.get("TOTAL_STATS_SENT"));
-
-        return new Response(JSON.stringify({ lastUpdated: { date, timestampMilliseconds, timestampSeconds }, totalGuilds, totalChannels, totalMembers, totalStatsSent }), {
+        const statsObject = await DATA.get("STATS");
+        return new Response(statsObject, {
             headers: { "Content-Type": "application/json" },
             status: 200
         });
