@@ -24,9 +24,9 @@ async function handleRequest(request) {
 
         // Add values to KV
         // TODO: Make this one .put() with a single json string
-        if (totalGuilds) await DATA.put("TOTAL_GUILDS", totalGuilds);
-        if (totalChannels) await DATA.put("TOTAL_CHANNELS", totalChannels);
-        if (totalMembers) await DATA.put("TOTAL_MEMBERS", totalMembers);
+        if (Number.isInteger(totalGuilds)) await DATA.put("TOTAL_GUILDS", totalGuilds);
+        if (Number.isInteger(totalChannels)) await DATA.put("TOTAL_CHANNELS", totalChannels);
+        if (Number.isInteger(totalMembers)) await DATA.put("TOTAL_MEMBERS", totalMembers);
 
         // If incrementTotalStatsSent is true, increment TOTAL_STATS_SENT by 1
         if (incrementTotalStatsSent === true) {
