@@ -15,17 +15,24 @@ async function handleRequest(request) {
         }
 
         let invalidBody = false;
-        const { totalGuilds, totalChannels, totalMembers } = await request.json().catch(() => {
+        const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent } = await request.json().catch(() => {
             invalidBody = true;
             return {};
         });
 
-        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3 }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
+        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3, "incrementTotalStatsSent": true }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
 
         // Add values to KV
+        // TODO: Make this one .put() with a single json string
         if (totalGuilds) await DATA.put("TOTAL_GUILDS", totalGuilds);
         if (totalChannels) await DATA.put("TOTAL_CHANNELS", totalChannels);
         if (totalMembers) await DATA.put("TOTAL_MEMBERS", totalMembers);
+
+        // If incrementTotalStatsSent is true, increment TOTAL_STATS_SENT by 1
+        if (incrementTotalStatsSent === true) {
+            const totalStatsSent = parseInt(await DATA.get("TOTAL_STATS_SENT"));
+            await DATA.put("TOTAL_STATS_SENT", totalStatsSent + 1);
+        }
 
         // Add lastUpdated to KV
         const date = new Date();
@@ -40,11 +47,12 @@ async function handleRequest(request) {
     if (request.method === "GET") {
 
         const { date, timestampMilliseconds, timestampSeconds } = JSON.parse(await DATA.get("LAST_UPDATED"));
-        const totalGuilds = Number.parseInt(await DATA.get("TOTAL_GUILDS"));
-        const totalChannels = Number.parseInt(await DATA.get("TOTAL_CHANNELS"));
-        const totalMembers = Number.parseInt(await DATA.get("TOTAL_MEMBERS"));
+        const totalGuilds = parseInt(await DATA.get("TOTAL_GUILDS"));
+        const totalChannels = parseInt(await DATA.get("TOTAL_CHANNELS"));
+        const totalMembers = parseInt(await DATA.get("TOTAL_MEMBERS"));
+        const totalStatsSent = parseInt(await DATA.get("TOTAL_STATS_SENT"));
 
-        return new Response(JSON.stringify({ lastUpdated: { date, timestampMilliseconds, timestampSeconds }, totalGuilds, totalChannels, totalMembers }), {
+        return new Response(JSON.stringify({ lastUpdated: { date, timestampMilliseconds, timestampSeconds }, totalGuilds, totalChannels, totalMembers, totalStatsSent }), {
             headers: { "Content-Type": "application/json" },
             status: 200
         });
