@@ -15,12 +15,12 @@ async function handleRequest(request) {
         }
 
         let invalidBody = false;
-        const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent } = await request.json().catch(() => {
+        const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent, game } = await request.json().catch(() => {
             invalidBody = true;
             return {};
         });
 
-        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3, "incrementTotalStatsSent": true }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
+        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3, "incrementTotalStatsSent": true, "game": "Battlefield 1" }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
 
         // Get the KV STATS object and edit it accordingly, before .put()ing it back
         const statsObject = await DATA.get("STATS", { type: "json" });
@@ -28,8 +28,12 @@ async function handleRequest(request) {
         if (Number.isInteger(totalChannels)) statsObject.totalChannels = totalChannels;
         if (Number.isInteger(totalMembers)) statsObject.totalMembers = totalMembers;
         if (incrementTotalStatsSent === true) {
-            const totalStatsSent = parseInt(statsObject.totalStatsSent);
-            if (Number.isInteger(totalStatsSent)) statsObject.totalStatsSent += 1;
+            // Get totalStatsSent and the specific game to increment
+            const totalStatsSent = parseInt(statsObject.totalStats.totalStatsSent);
+            const totalStatsSentGame = parseInt(statsObject.totalStats[game]);
+            // Increment totalStatsSent and the specific game
+            if (Number.isInteger(totalStatsSent)) statsObject.totalStats.totalStatsSent += 1;
+            if (Number.isInteger(totalStatsSentGame)) statsObject.totalStats[game] += 1;
         }
 
         // Add lastUpdated to the object
