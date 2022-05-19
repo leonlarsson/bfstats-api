@@ -28,12 +28,12 @@ async function handleRequest(request) {
         if (Number.isInteger(totalChannels)) statsObject.totalChannels = totalChannels;
         if (Number.isInteger(totalMembers)) statsObject.totalMembers = totalMembers;
         if (incrementTotalStatsSent === true) {
-            // Get totalStatsSent and the specific game to increment
-            const totalStatsSent = parseInt(statsObject.totalStats.totalStatsSent);
-            const totalStatsSentGame = parseInt(statsObject.totalStats[game]);
-            // Increment totalStatsSent and the specific game
-            if (Number.isInteger(totalStatsSent)) statsObject.totalStats.totalStatsSent += 1;
-            if (Number.isInteger(totalStatsSentGame)) statsObject.totalStats[game] += 1;
+            // Get total and the specific game to increment
+            const totalStatsSent = parseInt(statsObject.totalStatsSent.total);
+            const totalStatsSentGame = parseInt(statsObject.totalStatsSent[game]);
+            // Increment total and the specific game
+            if (Number.isInteger(totalStatsSent)) statsObject.totalStatsSent.total += 1;
+            if (Number.isInteger(totalStatsSentGame)) statsObject.totalStatsSent[game] += 1;
         }
 
         // Add lastUpdated to the object
