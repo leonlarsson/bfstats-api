@@ -1,3 +1,6 @@
+const KV_LAST_UPDATED = '{"date":"Wed, 18 May 2022 20:22:50 GMT","timestampMilliseconds":1652905370044,"timestampSeconds":1652905370}';
+const KV_STATS = '{"totalGuilds":1457,"totalChannels":50596,"totalMembers":514646,"totalStatsSent":{"total":87457,"Battlefield 2042":3670,"Battlefield V":39112,"Battlefield 1":16273,"Battlefield Hardline":1253,"Battlefield 4":19704,"Battlefield 3":2656,"Battlefield Bad Company 2":121,"Battlefield 2":127},"lastUpdated":{"date":"Thu, 19 May 2022 21:41:08 GMT","timestampMilliseconds":1652996468750,"timestampSeconds":1652996468}}';
+
 addEventListener('fetch', event => {
     event.respondWith(handleRequest(event.request));
 });
