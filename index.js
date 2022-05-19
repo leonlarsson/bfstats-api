@@ -35,8 +35,8 @@ async function handleRequest(request) {
             const totalStatsSent = parseInt(statsObject.totalStatsSent.total);
             const totalStatsSentGame = parseInt(statsObject.totalStatsSent[game]);
             // Increment total and the specific game
-            if (Number.isInteger(totalStatsSent)) statsObject.totalStatsSent.total += 1;
-            if (Number.isInteger(totalStatsSentGame)) statsObject.totalStatsSent[game] += 1;
+            if (Number.isInteger(totalStatsSent)) statsObject.totalStatsSent.total++;
+            if (Number.isInteger(totalStatsSentGame)) statsObject.totalStatsSent[game]++;
         }
 
         // Add lastUpdated to the object
