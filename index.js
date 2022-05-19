@@ -20,7 +20,7 @@ async function handleRequest(request) {
             return {};
         });
 
-        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3, "incrementTotalStatsSent": true, "game": "Battlefield 1" }\nNote: Not all keys will need to be there.', { headers: { "Content-Type": "text/plain" }, status: 400 });
+        if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3, "incrementTotalStatsSent": true, "game": "Battlefield 1" }\nNote: Not all keys will need to be there. "game" should be present if "incrementTotalStatsSent" is.', { headers: { "Content-Type": "text/plain" }, status: 400 });
 
         // Get the KV STATS object and edit it accordingly, before .put()ing it back
         const statsObject = await DATA.get("STATS", { type: "json" });
