@@ -56,7 +56,10 @@ async function handleRequest(request) {
 
         const statsObject = await DATA.get("STATS");
         return new Response(statsObject, {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "https://bfstats.leonlarsson.com",
+            },
             status: 200
         });
     }
