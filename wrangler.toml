@@ -1,5 +1,5 @@
 name = "bfstats"
-main = "./index.js"
+main = "./index.ts"
 compatibility_date = "2022-05-16"
 
 kv_namespaces = [
