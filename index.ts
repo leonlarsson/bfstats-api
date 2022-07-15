@@ -8,7 +8,7 @@ export default {
 
             // IF API-KEY is not correct, return
             if (request.headers.get("API-KEY") !== env.API_KEY) {
-                return new Response("No valid API key in request.", {
+                return new Response("No valid 'API-KEY' in request headers.", {
                     headers: { "Content-Type": "text/plain" },
                     status: 401
                 });
@@ -55,9 +55,8 @@ export default {
                 headers: { "Content-Type": "application/json" },
                 status: 200
             });
-        }
-
-        if (request.method === "GET") {
+            
+        } else if (request.method === "GET") {
 
             const statsObject: string = await env.DATA.get("STATS");
             return new Response(statsObject, {
