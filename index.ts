@@ -1,6 +1,7 @@
-import { ReceivedBody, StatsObject } from "./types";
+import { ZodError } from "zod";
+import { ReceivedBodySchema, ReceivedBody, StatsObject } from "./types";
 
-const KV_STATS = '{"totalGuilds":1684,"totalChannels":56965,"totalMembers":539428,"totalStatsSent":{"total":101351,"games":{"Battlefield 2042":8234,"Battlefield V":43631,"Battlefield 1":18396,"Battlefield Hardline":1330,"Battlefield 4":22058,"Battlefield 3":2846,"Battlefield Bad Company 2":147,"Battlefield 2":147},"languages":{"English":60510,"French":921,"Italian":279,"German":744,"Spanish":621,"Russian":968,"Polish":471,"Brazilian Portuguese":1253,"Turkish":471,"Swedish":297,"Norwegian":26,"Finnish":95,"Arabic":105}},"lastUpdated":{"date":"Fri, 15 Jul 2022 18:23:00 GMT","timestampMilliseconds":1657909380671,"timestampSeconds":1657909380}}';
+const KV_STATS = '{"totalGuilds":1686,"totalChannels":57043,"totalMembers":539451,"totalStatsSent":{"total":101516,"games":{"Battlefield 2042":8280,"Battlefield V":43686,"Battlefield 1":18421,"Battlefield Hardline":1331,"Battlefield 4":22091,"Battlefield 3":2850,"Battlefield Bad Company 2":148,"Battlefield 2":147},"languages":{"English":60657,"French":924,"Italian":279,"German":748,"Spanish":622,"Russian":973,"Polish":473,"Brazilian Portuguese":1254,"Turkish":471,"Swedish":298,"Norwegian":26,"Finnish":95,"Arabic":106}},"lastUpdated":{"date":"Sat, 16 Jul 2022 13:36:17 GMT","timestampMilliseconds":1657978577513,"timestampSeconds":1657978577}}';
 
 export default {
     async fetch(request: Request, env: any): Promise<Response> {
@@ -14,30 +15,36 @@ export default {
                 });
             }
 
-            let invalidBody = false;
-            const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent, game, language }: ReceivedBody = await request.json().catch(() => {
-                invalidBody = true;
-                return {};
-            });
+            // Validate the received data with zod against ReceivedBodySchema. If the validation fails, return the zod errors as the response
+            let receivedBody: ReceivedBody;
+            try {
+                const parsedJson = await request.json().catch(() => ({}));
+                receivedBody = ReceivedBodySchema.parse(parsedJson);
+            } catch (err) {
+                if (err instanceof ZodError) {
+                    return new Response("Received the following ZodError: " + JSON.stringify(err.format()), {
+                        headers: { "Content-Type": "application/json" },
+                        status: 400
+                    });
+                }
+                return new Response(err.message);
+            }
 
-            // Return on invalid body
-            if (invalidBody) return new Response('Invalid body. Please make sure the body is there and is valid JSON.\nFormat is { "totalGuilds": 1, "totalChannels": 2, "totalMembers": 3, "incrementTotalStatsSent": true, "game": "Battlefield 1", "language": "Swedish" }\nNote: Not all keys will need to be there. "game" and "language" should be present if "incrementTotalStatsSent" is.', { headers: { "Content-Type": "text/plain" }, status: 400 });
+            // At least totalGuilds, totalChannels, totalMembers are guaranteed to be present and numbers
+            const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent, game, language } = receivedBody;
 
             // Get the KV STATS object and edit it accordingly, before .put()ing it back
             const statsObject: StatsObject = await env.DATA.get("STATS", { type: "json" });
-            if (Number.isInteger(totalGuilds)) statsObject.totalGuilds = totalGuilds;
-            if (Number.isInteger(totalChannels)) statsObject.totalChannels = totalChannels;
-            if (Number.isInteger(totalMembers)) statsObject.totalMembers = totalMembers;
+            statsObject.totalGuilds = totalGuilds;
+            statsObject.totalChannels = totalChannels;
+            statsObject.totalMembers = totalMembers;
 
             if (incrementTotalStatsSent === true) {
 
                 // Get total and the specific game to increment
-                const totalStatsSent = statsObject.totalStatsSent.total;
+                statsObject.totalStatsSent.total++;
                 const totalStatsSentGame = game ? statsObject.totalStatsSent.games[game] : null;
                 const totalStatsSentLanguage = language ? statsObject.totalStatsSent.languages[language] : null;
-
-                // Increment total
-                if (Number.isInteger(totalStatsSent)) statsObject.totalStatsSent.total++;
 
                 // Increment specific game and language, if defined and an is an integer
                 if (game && Number.isInteger(totalStatsSentGame)) statsObject.totalStatsSent.games[game]++;
@@ -55,7 +62,7 @@ export default {
                 headers: { "Content-Type": "application/json" },
                 status: 200
             });
-            
+
         } else if (request.method === "GET") {
 
             const statsObject: string = await env.DATA.get("STATS");
@@ -66,7 +73,7 @@ export default {
                 },
                 status: 200
             });
-            
+
         } else {
             return Response.redirect("https://api.onlyraccoons.com/405", 302);
         }
