@@ -43,6 +43,8 @@ export default {
                     status: 500
                 });
             }
+
+            // Update totalGuilds, totalChannels, totalMembers
             statsObject.totalGuilds = totalGuilds;
             statsObject.totalChannels = totalChannels;
             statsObject.totalMembers = totalMembers;
