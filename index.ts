@@ -22,7 +22,7 @@ export default {
                 receivedBody = ReceivedBodySchema.parse(parsedJson);
             } catch (err) {
                 if (err instanceof ZodError) {
-                    return new Response("Received the following ZodError: " + JSON.stringify(err.format()), {
+                    return new Response(JSON.stringify({ note: "Received this ZodError.", ...err.format() }), {
                         headers: { "Content-Type": "application/json" },
                         status: 400
                     });
@@ -38,7 +38,7 @@ export default {
             try {
                 StatsObjectSchema.parse(statsObject);
             } catch (err) {
-                return new Response("KV statsObject doesn't match schema. Not updating KV. Received the following ZodError: " + JSON.stringify(err.format()), {
+                return new Response(JSON.stringify({ note: "KV statsObject doesn't match schema. Not updating KV. Received this ZodError.", ...err.format() }), {
                     headers: { "Content-Type": "application/json" },
                     status: 500
                 });
