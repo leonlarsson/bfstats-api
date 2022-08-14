@@ -1,10 +1,10 @@
 import { ZodError } from "zod";
-import { ReceivedBody, ReceivedBodySchema, StatsObject, StatsObjectSchema } from "./types";
+import { Environment, ReceivedBody, ReceivedBodySchema, StatsObject, StatsObjectSchema } from "./types";
 
-const KV_STATS = '{"totalGuilds":1686,"totalChannels":57043,"totalMembers":539451,"totalStatsSent":{"total":101516,"games":{"Battlefield 2042":8280,"Battlefield V":43686,"Battlefield 1":18421,"Battlefield Hardline":1331,"Battlefield 4":22091,"Battlefield 3":2850,"Battlefield Bad Company 2":148,"Battlefield 2":147},"languages":{"English":60657,"French":924,"Italian":279,"German":748,"Spanish":622,"Russian":973,"Polish":473,"Brazilian Portuguese":1254,"Turkish":471,"Swedish":298,"Norwegian":26,"Finnish":95,"Arabic":106}},"lastUpdated":{"date":"Sat, 16 Jul 2022 13:36:17 GMT","timestampMilliseconds":1657978577513,"timestampSeconds":1657978577}}';
+const KV_STATS = '{"totalGuilds":1796,"totalChannels":60079,"totalMembers":617562,"totalStatsSent":{"total":108172,"games":{"Battlefield 2042":10432,"Battlefield V":46011,"Battlefield 1":19193,"Battlefield Hardline":1369,"Battlefield 4":23274,"Battlefield 3":3014,"Battlefield Bad Company 2":158,"Battlefield 2":151},"languages":{"English":66414,"French":1040,"Italian":325,"German":867,"Spanish":716,"Russian":1098,"Polish":551,"Brazilian Portuguese":1444,"Turkish":559,"Swedish":315,"Norwegian":30,"Finnish":97,"Arabic":108}},"lastUpdated":{"date":"Sun, 14 Aug 2022 11:08:18 GMT","timestampMilliseconds":1660475298232,"timestampSeconds":1660475298}}';
 
 export default {
-    async fetch(request: Request, env: any): Promise<Response> {
+    async fetch(request: Request, env: Environment): Promise<Response> {
         if (request.method === "POST") {
 
             // IF API-KEY is not correct, return
@@ -34,7 +34,7 @@ export default {
             const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent, game, language } = receivedBody;
 
             // Get the KV STATS object and edit it accordingly, before .put()ing it back
-            const statsObject: StatsObject = await env.DATA.get("STATS", { type: "json" });
+            const statsObject: StatsObject = await env.DATA_KV.get("STATS", { type: "json" });
             try {
                 StatsObjectSchema.parse(statsObject);
             } catch (err) {
@@ -61,7 +61,7 @@ export default {
             statsObject.lastUpdated = { date: date.toUTCString(), timestampMilliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) };
 
             // .put() the edited object
-            await env.DATA.put("STATS", JSON.stringify(statsObject));
+            await env.DATA_KV.put("STATS", JSON.stringify(statsObject));
 
             return new Response(JSON.stringify({ message: "Data posted to KV.", statsObject }), {
                 headers: { "Content-Type": "application/json" },
@@ -70,7 +70,7 @@ export default {
 
         } else if (request.method === "GET") {
 
-            const statsObject: string = await env.DATA.get("STATS");
+            const statsObject: string = await env.DATA_KV.get("STATS");
             return new Response(statsObject, {
                 headers: {
                     "Content-Type": "application/json",

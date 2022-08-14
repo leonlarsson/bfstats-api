@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "zod": "^3.17.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.14.1"
   }
 }
