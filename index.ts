@@ -73,8 +73,7 @@ export default {
             const statsObject: string = await env.DATA_KV.get("STATS");
             return new Response(statsObject, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "https://bfstats.leonlarsson.com",
+                    "Content-Type": "application/json"
                 },
                 status: 200
             });
