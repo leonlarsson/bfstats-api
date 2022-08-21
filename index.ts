@@ -73,7 +73,8 @@ export default {
             const statsObject: string = await env.DATA_KV.get("STATS");
             return new Response(statsObject, {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
                 },
                 status: 200
             });
