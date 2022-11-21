@@ -5,14 +5,12 @@ const KV_STATS = '{"totalGuilds":1796,"totalChannels":60079,"totalMembers":61756
 
 export default {
     async fetch(request: Request, env: Environment): Promise<Response> {
+
         if (request.method === "POST") {
 
             // IF API-KEY is not correct, return
             if (request.headers.get("API-KEY") !== env.API_KEY) {
-                return new Response("No valid 'API-KEY' in request headers.", {
-                    headers: { "Content-Type": "text/plain" },
-                    status: 401
-                });
+                return new Response("No valid 'API-KEY' in request headers.", { status: 401 });
             }
 
             // Validate the received data with zod against ReceivedBodySchema. If the validation fails, return the zod errors as the response
@@ -21,12 +19,7 @@ export default {
                 const parsedJson = await request.json().catch(() => ({}));
                 receivedBody = ReceivedBodySchema.parse(parsedJson);
             } catch (err) {
-                if (err instanceof ZodError) {
-                    return new Response(JSON.stringify({ note: "Received this ZodError.", ...err.format() }), {
-                        headers: { "Content-Type": "application/json" },
-                        status: 400
-                    });
-                }
+                if (err instanceof ZodError) return Response.json({ note: "Received this ZodError.", ...err.format() }, { status: 400 });
                 return new Response(err.message);
             }
 
@@ -38,10 +31,7 @@ export default {
             try {
                 StatsObjectSchema.parse(statsObject);
             } catch (err) {
-                return new Response(JSON.stringify({ note: "KV statsObject doesn't match schema. Not updating KV. Received this ZodError.", ...err.format() }), {
-                    headers: { "Content-Type": "application/json" },
-                    status: 500
-                });
+                return Response.json({ note: "KV statsObject doesn't match schema. Not updating KV. Received this ZodError.", ...err.format() }, { status: 500 });
             }
 
             // Update totalGuilds, totalChannels, totalMembers
@@ -63,24 +53,16 @@ export default {
             // .put() the edited object
             await env.DATA_KV.put("STATS", JSON.stringify(statsObject));
 
-            return new Response(JSON.stringify({ message: "Data posted to KV.", statsObject }), {
-                headers: { "Content-Type": "application/json" },
-                status: 200
-            });
+            return Response.json({ message: "Data posted to KV.", statsObject });
 
         } else if (request.method === "GET") {
 
             const statsObject: string = await env.DATA_KV.get("STATS");
             return new Response(statsObject, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-                status: 200
+                headers: { "Content-Type": "application/json" }
             });
-
-        } else {
-            return Response.redirect("https://api.onlyraccoons.com/405", 302);
         }
+
+        return new Response("Not found.", { status: 404 });
     }
 }
