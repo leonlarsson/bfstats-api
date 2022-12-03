@@ -1,7 +1,11 @@
 name = "bfstats"
 main = "./index.ts"
-compatibility_date = "2022-05-16"
+compatibility_date = "2022-12-03"
 
 kv_namespaces = [
   { binding = "DATA_KV", id = "c53bec558ffc4485b49260392e1adab2", preview_id = "c53bec558ffc4485b49260392e1adab2" }
+]
+
+d1_databases = [
+    { binding = "DB", database_name = "bfstats", database_id = "668d0e1f-b01a-4048-8796-fdf4530fb192", preview_database_id = "668d0e1f-b01a-4048-8796-fdf4530fb192" }
 ]

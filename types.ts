@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export type Environment = {
+export interface Environment {
+    DB: D1Database,
     DATA_KV: KVNamespace,
     API_KEY: string
 };
@@ -8,8 +9,8 @@ export type Environment = {
 const games = ["Battlefield 2042", "Battlefield V", "Battlefield 1", "Battlefield Hardline", "Battlefield 4", "Battlefield 3", "Battlefield Bad Company 2", "Battlefield 2"] as const;
 const languages = ["English", "French", "Italian", "German", "Spanish", "Russian", "Polish", "Brazilian Portuguese", "Turkish", "Swedish", "Norwegian", "Finnish", "Arabic"] as const;
 
-export type ReceivedBody = z.infer<typeof ReceivedBodySchema>;
-export const ReceivedBodySchema = z.object({
+export type BaseReceivedBody = z.infer<typeof BaseReceivedBodySchema>;
+export const BaseReceivedBodySchema = z.object({
     totalGuilds: z.number().int(),
     totalChannels: z.number().int(),
     totalMembers: z.number().int(),
@@ -18,8 +19,8 @@ export const ReceivedBodySchema = z.object({
     language: z.enum(languages).optional()
 });
 
-export type StatsObject = z.infer<typeof StatsObjectSchema>;
-export const StatsObjectSchema = z.object({
+export type BaseStatsObject = z.infer<typeof BaseStatsObjectSchema>;
+export const BaseStatsObjectSchema = z.object({
     totalGuilds: z.number().int(),
     totalChannels: z.number().int(),
     totalMembers: z.number().int(),
@@ -57,3 +58,21 @@ export const StatsObjectSchema = z.object({
         timestampSeconds: z.number().int()
     })
 });
+
+export interface D1UsersPayload {
+    userId: string,
+    username: string,
+    language: string
+};
+
+export interface D1OutputPayload {
+    userId: string,
+    username: string,
+    guildName: string,
+    guildId: string,
+    game: string,
+    segment: string,
+    language: string
+    messageURL: string,
+    imageURL: string
+};
