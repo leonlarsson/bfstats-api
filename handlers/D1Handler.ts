@@ -34,7 +34,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         } else if (request.method === "GET") {
             const query = request.headers.get("D1-Query");
             const { results } = await env.DB.prepare(query ?? "SELECT * FROM users").all();
-            return Response.json(results);
+            return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
         }
     }
 
@@ -57,7 +57,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         } else if (request.method === "GET") {
             const query = request.headers.get("D1-Query");
             const { results } = await env.DB.prepare(query ?? "SELECT * FROM output").all();
-            return Response.json(results);
+            return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
         }
     }
 
