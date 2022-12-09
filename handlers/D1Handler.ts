@@ -4,7 +4,10 @@ export default async (request: Request, env: Environment): Promise<Response> => 
 
     // IF API-KEY is not correct, return
     if (request.headers.get("API-KEY") !== env.API_KEY) {
-        return new Response("No valid 'API-KEY' in request headers.", { status: 401 });
+        return new Response("No valid 'API-KEY' in request headers.", {
+            status: 401,
+            headers: { "Access-Control-Allow-Origin": "*" }
+        });
     }
 
     const url = new URL(request.url);
