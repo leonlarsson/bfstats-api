@@ -3,7 +3,8 @@ import { z } from "zod";
 export interface Environment {
     DB: D1Database,
     DATA_KV: KVNamespace,
-    API_KEY: string
+    API_KEY: string,
+    EMAIL: string
 };
 
 const games = ["Battlefield 2042", "Battlefield V", "Battlefield 1", "Battlefield Hardline", "Battlefield 4", "Battlefield 3", "Battlefield Bad Company 2", "Battlefield 2"] as const;

@@ -1,6 +1,7 @@
 import handleCORSPreflight from "./handlers/handleCORSPreflight";
 import baseStatsHandler from "./handlers/baseStatsHandler";
 import D1Handler from "./handlers/D1Handler";
+import sendEmail from "./handlers/sendEmail";
 import { Environment } from "./types";
 
 export default {
@@ -13,5 +14,8 @@ export default {
         if (url.pathname === "/" && ["GET", "POST"].includes(request.method)) return baseStatsHandler(request, env);
         if (["/d1/users", "/d1/output"].includes(url.pathname) && ["GET", "POST"].includes(request.method)) return D1Handler(request, env);
         return new Response("Not found.", { status: 404 });
+    },
+    async scheduled(event: ScheduledEvent, env: Environment, ctx: ExecutionContext) {
+        ctx.waitUntil(sendEmail(env));
     }
 }
