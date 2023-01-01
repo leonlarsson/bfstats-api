@@ -1,4 +1,4 @@
-import { D1OutputPayload, D1UsersPayload, Environment } from "../types";
+import { D1OutputPayload, D1UserPayload, Environment } from "../types";
 
 export default async (request: Request, env: Environment): Promise<Response> => {
 
@@ -17,7 +17,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         if (request.method === "POST") {
             try {
 
-                const { userId, username, language }: D1UsersPayload = await request.json();
+                const { userId, username, language }: D1UserPayload = await request.json();
 
                 // Insert a new user. If there is a conflict (user_id already exists), then update the existing row
                 await env.DB.prepare(`
@@ -41,16 +41,16 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         }
     }
 
-    // D1 output
-    if (url.pathname === "/d1/output") {
+    // D1 outputs
+    if (url.pathname === "/d1/outputs") {
         if (request.method === "POST") {
             try {
 
                 const { userId, username, guildName, guildId, game, segment, language, messageURL, imageURL }: D1OutputPayload = await request.json();
 
-                await env.DB.prepare(`INSERT INTO output (user_id, username, guild_name, guild_id, game, segment, language, date, message_url, image_url) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`).bind(userId, username, guildName, guildId, game, segment, language, new Date().getTime(), messageURL, imageURL).run();
+                await env.DB.prepare(`INSERT INTO outputs (user_id, username, guild_name, guild_id, game, segment, language, date, message_url, image_url) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`).bind(userId, username, guildName, guildId, game, segment, language, new Date().getTime(), messageURL, imageURL).run();
 
-                return new Response("POST /d1/output OK");
+                return new Response("POST /d1/outputs OK");
 
             } catch (e) {
                 console.log({ message: e.message, cause: e.cause?.message });
@@ -59,7 +59,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
 
         } else if (request.method === "GET") {
             const query = request.headers.get("D1-Query");
-            const { results } = await env.DB.prepare(query ?? "SELECT * FROM output").all();
+            const { results } = await env.DB.prepare(query ?? "SELECT * FROM outputs").all();
             return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
         }
     }

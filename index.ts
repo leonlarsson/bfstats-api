@@ -12,7 +12,7 @@ export default {
 
         const url = new URL(request.url);
         if (url.pathname === "/" && ["GET", "POST"].includes(request.method)) return baseStatsHandler(request, env);
-        if (["/d1/users", "/d1/output"].includes(url.pathname) && ["GET", "POST"].includes(request.method)) return D1Handler(request, env);
+        if (["/d1/users", "/d1/outputs"].includes(url.pathname) && ["GET", "POST"].includes(request.method)) return D1Handler(request, env);
         return new Response("Not found.", { status: 404 });
     },
     async scheduled(event: ScheduledEvent, env: Environment, ctx: ExecutionContext) {

@@ -60,7 +60,7 @@ export const BaseStatsObjectSchema = z.object({
     })
 });
 
-export interface D1UsersPayload {
+export interface D1UserPayload {
     userId: string,
     username: string,
     language: string
