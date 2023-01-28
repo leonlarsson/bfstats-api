@@ -1,20 +1,17 @@
 import { D1OutputPayload, D1UserPayload, Environment } from "../types";
+import _401 from "../utils/401";
 
 export default async (request: Request, env: Environment): Promise<Response> => {
 
-    // IF API-KEY is not correct, return
-    if (request.headers.get("API-KEY") !== env.API_KEY) {
-        return new Response("No valid 'API-KEY' in request headers.", {
-            status: 401,
-            headers: { "Access-Control-Allow-Origin": "*" }
-        });
-    }
-
+    const isAdmin = request.headers.get("API-KEY") === env.API_KEY;
     const url = new URL(request.url);
 
     // D1 users
     if (url.pathname === "/d1/users") {
         if (request.method === "POST") {
+
+            if (!isAdmin) return _401();
+
             try {
 
                 const { userId, username, language }: D1UserPayload = await request.json();
@@ -36,7 +33,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
 
         } else if (request.method === "GET") {
             const query = request.headers.get("D1-Query");
-            const { results } = await env.DB.prepare(query ?? "SELECT * FROM users").all();
+            const { results } = await env.DB.prepare(isAdmin ? (query ?? "SELECT * FROM users") : ("SELECT total_stats_sent FROM users ORDER BY total_stats_sent DESC")).all();
             return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
         }
     }
@@ -44,6 +41,9 @@ export default async (request: Request, env: Environment): Promise<Response> => 
     // D1 outputs
     if (url.pathname === "/d1/outputs") {
         if (request.method === "POST") {
+
+            if (!isAdmin) return _401();
+
             try {
 
                 const { userId, username, guildName, guildId, game, segment, language, messageURL, imageURL }: D1OutputPayload = await request.json();
@@ -59,7 +59,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
 
         } else if (request.method === "GET") {
             const query = request.headers.get("D1-Query");
-            const { results } = await env.DB.prepare(query ?? "SELECT * FROM outputs").all();
+            const { results } = await env.DB.prepare(isAdmin ? (query ?? "SELECT * FROM outputs") : ("SELECT game, segment, language, date FROM outputs")).all();
             return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
         }
     }
