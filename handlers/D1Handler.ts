@@ -3,7 +3,7 @@ import _401 from "../utils/401";
 
 export default async (request: Request, env: Environment): Promise<Response> => {
 
-    const isAdmin = request.headers.get("API-KEY") === env.API_KEY;
+    const isAdmin = env.API_KEY && request.headers.get("API-KEY") === env.API_KEY;
     const url = new URL(request.url);
 
     // D1 users
