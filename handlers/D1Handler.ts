@@ -36,7 +36,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
             // If not an admin, return the cached D1 data from KV
             if (!isAdmin) {
                 const data: { cached: number, users: any[] } = await env.DATA_KV.get("D1_USERS", "json");
-                return Response.json(data.users);
+                return Response.json(data.users, { headers: { "X-Cached-At": data.cached.toString() } });
             };
 
             const query = request.headers.get("D1-Query");
@@ -69,7 +69,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
             // If not an admin, return the cached D1 data from KV
             if (!isAdmin) {
                 const data: { cached: number, outputs: any[] } = await env.DATA_KV.get("D1_OUTPUTS", "json");
-                return Response.json(data.outputs);
+                return Response.json(data.outputs, { headers: { "X-Cached-At": data.cached.toString() } });
             };
 
             const query = request.headers.get("D1-Query");
