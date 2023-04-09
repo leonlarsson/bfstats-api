@@ -12,4 +12,4 @@ d1_databases = [
 
 # Trigger every Monday at 9 AM UTC
 [triggers]
-crons = ["0 9 * * MON"]
+crons = ["0 9 * * MON", "0 * * * *"]
