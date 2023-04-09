@@ -2,6 +2,7 @@ import handleCORSPreflight from "./handlers/handleCORSPreflight";
 import baseStatsHandler from "./handlers/baseStatsHandler";
 import D1Handler from "./handlers/D1Handler";
 import sendEmail from "./handlers/sendEmail";
+import cacheD1 from "./handlers/cacheD1";
 import { Environment } from "./types";
 
 export default {
@@ -16,6 +17,15 @@ export default {
         return new Response("Not found.", { status: 404 });
     },
     async scheduled(event: ScheduledEvent, env: Environment, ctx: ExecutionContext) {
-        ctx.waitUntil(sendEmail(env));
+        switch (event.cron) {
+            // Weekly email update
+            case "0 9 * * MON":
+                ctx.waitUntil(sendEmail(env));
+                break;
+            // Hourly caching of D1 into KV
+            case "0 * * * *":
+                ctx.waitUntil(cacheD1(env));
+                break;
+        }
     }
 }
