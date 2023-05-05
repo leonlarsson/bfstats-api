@@ -77,4 +77,9 @@ export default async (request: Request, env: Environment): Promise<Response> => 
             return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
         }
     }
+
+    if (request.method === "GET" && url.pathname === "/d1/outputs/counts") {
+        const { results } = await env.DB.prepare("SELECT 'game' as category, game as item, COUNT(*) as sent FROM outputs GROUP BY game UNION ALL SELECT 'segment' as category, segment as item, COUNT(*) as sent FROM outputs GROUP BY segment UNION ALL SELECT 'language' as category, language as item, COUNT(*) as sent FROM outputs GROUP BY language ORDER BY category ASC, sent DESC").all();
+        return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
+    }
 }
