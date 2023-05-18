@@ -4,6 +4,7 @@ export interface Environment {
     DB: D1Database,
     DATA_KV: KVNamespace,
     API_KEY: string,
+    RESEND_API_KEY: string,
     EMAIL: string
 };
 
