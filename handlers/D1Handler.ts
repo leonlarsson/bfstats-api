@@ -45,8 +45,15 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         }
     }
 
+    // D1 users (top 20)
     if (request.method === "GET" && url.pathname === "/d1/users/limited") {
         const { results } = await env.DB.prepare("SELECT total_stats_sent FROM users ORDER BY total_stats_sent DESC LIMIT 20").all();
+        return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
+    }
+
+    // D1 users (count)
+    if (request.method === "GET" && url.pathname === "/d1/users/counts") {
+        const { results } = await env.DB.prepare("SELECT COUNT(*) FROM users").all();
         return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
     }
 
@@ -83,11 +90,13 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         }
     }
 
+    // D1 outputs (last 20)
     if (request.method === "GET" && url.pathname === "/d1/outputs/limited") {
         const { results } = await env.DB.prepare("SELECT game, segment, language, date FROM outputs ORDER BY date DESC LIMIT 20").all();
         return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
     }
 
+    // D1 outputs (counts)
     if (request.method === "GET" && url.pathname === "/d1/outputs/counts") {
         const { results } = await env.DB.prepare("SELECT 'game' as category, game as item, COUNT(*) as sent FROM outputs GROUP BY game UNION ALL SELECT 'segment' as category, segment as item, COUNT(*) as sent FROM outputs GROUP BY segment UNION ALL SELECT 'language' as category, language as item, COUNT(*) as sent FROM outputs GROUP BY language ORDER BY category ASC, sent DESC").all();
         return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
