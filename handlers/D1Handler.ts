@@ -53,7 +53,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
 
     // D1 users (count)
     if (request.method === "GET" && url.pathname === "/d1/users/counts") {
-        const { results } = await env.DB.prepare("SELECT COUNT(*) FROM users").all();
+        const { results } = await env.DB.prepare("SELECT COUNT(*) as total_users FROM users").all();
         return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
     }
 
