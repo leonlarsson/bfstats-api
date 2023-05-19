@@ -45,6 +45,11 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         }
     }
 
+    if (request.method === "GET" && url.pathname === "/d1/users/limited") {
+        const { results } = await env.DB.prepare("SELECT total_stats_sent FROM users ORDER BY total_stats_sent DESC LIMIT 20").all();
+        return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
+    }
+
     // D1 outputs
     if (url.pathname === "/d1/outputs") {
         if (request.method === "POST") {
@@ -76,6 +81,11 @@ export default async (request: Request, env: Environment): Promise<Response> => 
             const { results } = await env.DB.prepare(isAdmin ? (query ?? "SELECT * FROM outputs") : ("SELECT game, segment, language, date FROM outputs")).all();
             return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
         }
+    }
+
+    if (request.method === "GET" && url.pathname === "/d1/outputs/limited") {
+        const { results } = await env.DB.prepare("SELECT game, segment, language, date FROM outputs ORDER BY date DESC LIMIT 20").all();
+        return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
     }
 
     if (request.method === "GET" && url.pathname === "/d1/outputs/counts") {
