@@ -7,7 +7,7 @@ kv_namespaces = [
 ]
 
 d1_databases = [
-    { binding = "DB", database_name = "bfstats", database_id = "668d0e1f-b01a-4048-8796-fdf4530fb192", preview_database_id = "668d0e1f-b01a-4048-8796-fdf4530fb192" }
+    { binding = "DB", database_name = "bfstats-new", database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10", preview_database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10" }
 ]
 
 # Trigger every Monday at 9 AM UTC and every hour
