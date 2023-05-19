@@ -57,6 +57,12 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
     }
 
+    // D1 users (count and top 20)
+    if (request.method === "GET" && url.pathname === "/d1/users/special") {
+        const { results } = await env.DB.prepare("SELECT (SELECT COUNT(*) FROM users) AS total_users, total_stats_sent FROM users ORDER BY total_stats_sent DESC LIMIT 20").all();
+        return Response.json(results, { headers: { "Access-Control-Allow-Origin": "*" } });
+    }
+
     // D1 outputs
     if (url.pathname === "/d1/outputs") {
         if (request.method === "POST") {
