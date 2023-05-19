@@ -22,7 +22,7 @@ export default {
             case "0 9 * * MON":
                 ctx.waitUntil(sendEmail(env));
                 break;
-            // Hourly caching of D1 into KV
+            // CRON REMOVED. Hourly caching of D1 into KV
             case "0 * * * *":
                 ctx.waitUntil(cacheD1(env));
                 break;

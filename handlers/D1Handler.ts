@@ -33,11 +33,11 @@ export default async (request: Request, env: Environment): Promise<Response> => 
 
         } else if (request.method === "GET") {
 
-            // If not an admin, return the cached D1 data from KV
-            if (!isAdmin) {
-                const data: { cached: number, users: any[] } = await env.DATA_KV.get("D1_USERS", "json");
-                return Response.json(data.users, { headers: { "X-Cached-At": data.cached.toString() } });
-            };
+            // DISABLED. If not an admin, return the cached D1 data from KV
+            // if (!isAdmin) {
+            //     const data: { cached: number, users: any[] } = await env.DATA_KV.get("D1_USERS", "json");
+            //     return Response.json(data.users, { headers: { "X-Cached-At": data.cached.toString() } });
+            // };
 
             const query = request.headers.get("D1-Query");
             const { results } = await env.DB.prepare(isAdmin ? (query ?? "SELECT * FROM users") : ("SELECT total_stats_sent FROM users ORDER BY total_stats_sent DESC")).all();
@@ -84,11 +84,11 @@ export default async (request: Request, env: Environment): Promise<Response> => 
 
         } else if (request.method === "GET") {
 
-            // If not an admin, return the cached D1 data from KV
-            if (!isAdmin) {
-                const data: { cached: number, outputs: any[] } = await env.DATA_KV.get("D1_OUTPUTS", "json");
-                return Response.json(data.outputs, { headers: { "X-Cached-At": data.cached.toString() } });
-            };
+            // DISABLED. If not an admin, return the cached D1 data from KV
+            // if (!isAdmin) {
+            //     const data: { cached: number, outputs: any[] } = await env.DATA_KV.get("D1_OUTPUTS", "json");
+            //     return Response.json(data.outputs, { headers: { "X-Cached-At": data.cached.toString() } });
+            // };
 
             const query = request.headers.get("D1-Query");
             const { results } = await env.DB.prepare(isAdmin ? (query ?? "SELECT * FROM outputs") : ("SELECT game, segment, language, date FROM outputs")).all();
