@@ -95,4 +95,6 @@ export default async (request: Request, env: Environment): Promise<Response> => 
             }
         }
     }
+
+    return new Response("Not found.", { status: 404 });
 }

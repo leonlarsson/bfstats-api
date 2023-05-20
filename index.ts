@@ -7,13 +7,12 @@ import { Environment } from "./types";
 
 export default {
     async fetch(request: Request, env: Environment): Promise<Response> {
-
         // Handle CORS preflight. This is to allow me to fetch
         if (request.method === "OPTIONS") return handleCORSPreflight(request);
 
         const url = new URL(request.url);
-        if (url.pathname === "/" && ["GET", "POST"].includes(request.method)) return baseStatsHandler(request, env);
-        if (["/d1", "/d1/users", "/d1/users/limited", "/d1/users/counts", "/d1/users/special", "/d1/outputs", "/d1/outputs/limited", "/d1/outputs/counts"].includes(url.pathname) && ["GET", "POST"].includes(request.method)) return D1Handler(request, env);
+        if (["GET", "POST"].includes(request.method) && url.pathname === "/") return baseStatsHandler(request, env);
+        if (["GET", "POST"].includes(request.method) && ["/d1", "/d1/users", "/d1/users/limited", "/d1/users/counts", "/d1/users/special", "/d1/outputs", "/d1/outputs/limited", "/d1/outputs/counts"].includes(url.pathname)) return D1Handler(request, env);
         return new Response("Not found.", { status: 404 });
     },
     async scheduled(event: ScheduledEvent, env: Environment, ctx: ExecutionContext) {
