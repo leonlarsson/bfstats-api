@@ -71,6 +71,16 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         }
     }
 
+    // PUBLIC - D1 outputs (per day)
+    if (request.method === "GET" && url.pathname === "/d1/outputs/daily") {
+        try {
+            const { results } = await env.DB.prepare("SELECT DATE(date/1000, 'unixepoch') AS day, COUNT() AS sent FROM outputs GROUP BY day").all();
+            return json(results);
+        } catch (error) {
+            return handleAndLogD1Error(error);
+        }
+    }
+
     // PUBLIC - D1 events (all)
     if (request.method === "GET" && url.pathname === "/d1/events") {
         try {
