@@ -3,3 +3,6 @@ CREATE TABLE users (user_id TEXT NOT NULL PRIMARY KEY, username TEXT NOT NULL, l
 
 DROP TABLE IF EXISTS outputs;
 CREATE TABLE outputs (user_id TEXT NOT NULL, username TEXT NOT NULL, guild_name TEXT, guild_id TEXT, game TEXT, segment TEXT, language TEXT, date INTEGER, message_url TEXT, image_url TEXT);
+
+DROP TABLE IF EXISTS events;
+CREATE TABLE events (event TEXT, date INTEGER);

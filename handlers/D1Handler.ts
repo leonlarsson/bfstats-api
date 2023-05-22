@@ -1,4 +1,4 @@
-import { D1OutputPayload, D1UserPayload, Environment } from "../types";
+import { D1EventPayload, D1OutputPayload, D1UserPayload, Environment } from "../types";
 import handleAndLogD1Error from "../utils/handleAndLogD1Error";
 import _401 from "../utils/401";
 import json from "../utils/json";
@@ -71,6 +71,16 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         }
     }
 
+    // PUBLIC - D1 events (all)
+    if (request.method === "GET" && url.pathname === "/d1/events") {
+        try {
+            const { results } = await env.DB.prepare("SELECT * FROM events").all();
+            return json(results);
+        } catch (error) {
+            return handleAndLogD1Error(error);
+        }
+    }
+
     // PRIVATE - POSTS
     if (request.method === "POST") {
         // D1 users
@@ -106,6 +116,22 @@ export default async (request: Request, env: Environment): Promise<Response> => 
                 await env.DB.prepare(`INSERT INTO outputs (user_id, username, guild_name, guild_id, game, segment, language, date, message_url, image_url) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`).bind(userId, username, guildName, guildId, game, segment, language, new Date().getTime(), messageURL, imageURL).run();
 
                 return new Response("POST /d1/outputs OK");
+
+            } catch (error) {
+                return handleAndLogD1Error(error);
+            }
+        }
+
+        // D1 events
+        if (url.pathname === "/d1/events") {
+            if (!isAdmin) return _401();
+
+            try {
+                const { event }: D1EventPayload = await request.json();
+
+                await env.DB.prepare("INSERT INTO events (event, date) VALUES (?1, ?2)").bind(event, new Date().getTime()).run();
+
+                return new Response("POST /d1/events OK");
 
             } catch (error) {
                 return handleAndLogD1Error(error);

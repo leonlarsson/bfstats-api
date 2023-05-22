@@ -78,3 +78,7 @@ export interface D1OutputPayload {
     messageURL: string,
     imageURL: string
 };
+
+export interface D1EventPayload {
+    event: "guildCreate" | "guildDelete",
+};
