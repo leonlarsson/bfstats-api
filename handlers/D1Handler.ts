@@ -22,7 +22,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
     }
 
     // PUBLIC - D1 users (top 20)
-    if (request.method === "GET" && url.pathname === "/d1/users/limited") {
+    if (request.method === "GET" && url.pathname === "/d1/users/top") {
         try {
             const { results } = await env.DB.prepare("SELECT total_stats_sent FROM users ORDER BY total_stats_sent DESC LIMIT 20").all();
             return json(results);
@@ -52,7 +52,7 @@ export default async (request: Request, env: Environment): Promise<Response> => 
     }
 
     // PUBLIC - D1 outputs (last 20)
-    if (request.method === "GET" && url.pathname === "/d1/outputs/limited") {
+    if (request.method === "GET" && url.pathname === "/d1/outputs/last") {
         try {
             const { results } = await env.DB.prepare("SELECT game, segment, language, date FROM outputs ORDER BY date DESC LIMIT 20").all();
             return json(results);
