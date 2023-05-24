@@ -91,10 +91,10 @@ export default async (request: Request, env: Environment): Promise<Response> => 
         }
     }
 
-    // PUBLIC - D1 events (all)
-    if (request.method === "GET" && url.pathname === "/d1/events") {
+    // PUBLIC - D1 events (last 20)
+    if (request.method === "GET" && url.pathname === "/d1/events/last") {
         try {
-            const { results } = await env.DB.prepare("SELECT * FROM events").all();
+            const { results } = await env.DB.prepare("SELECT * FROM events LIMIT 20").all();
             return json(results);
         } catch (error) {
             return handleAndLogD1Error(error);
