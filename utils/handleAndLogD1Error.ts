@@ -1,6 +1,4 @@
-import json from "./json";
-
-export default (error: Error) => {
-    console.error({ message: error.message });
-    return json({ message: error.message }, 500);
+export default (error: Error): Response => {
+  console.error({ message: error.message });
+  return Response.json({ message: error.message }, { status: 500 });
 };

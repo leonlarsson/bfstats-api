@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export interface Environment {
+export type Bindings = {
     DB: D1Database,
     DATA_KV: KVNamespace,
     API_KEY: string,

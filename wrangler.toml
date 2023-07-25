@@ -1,13 +1,13 @@
 name = "bfstats"
 main = "./index.ts"
-compatibility_date = "2022-12-03"
+compatibility_date = "2023-07-24"
 
 kv_namespaces = [
-  { binding = "DATA_KV", id = "c53bec558ffc4485b49260392e1adab2", preview_id = "c53bec558ffc4485b49260392e1adab2" }
+  { binding = "DATA_KV", id = "c53bec558ffc4485b49260392e1adab2", preview_id = "c53bec558ffc4485b49260392e1adab2" },
 ]
 
 d1_databases = [
-    { binding = "DB", database_name = "bfstats-new", database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10", preview_database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10" }
+  { binding = "DB", database_name = "bfstats-new", database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10", preview_database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10" },
 ]
 
 # Trigger every Monday at 9 AM UTC. "0 * * * *" has been removed
