@@ -15,6 +15,7 @@ import getOutputsDailyGames from "./handlers/outputs/getOutputsDailyGames";
 import postOutput from "./handlers/outputs/postOutput";
 import getEventsLast from "./handlers/events/getEventsLast";
 import postEvent from "./handlers/events/postEvent";
+import getUsageByUser from "./handlers/usage/getUsageByUser";
 import sendEmail from "./utils/sendEmail";
 import { Bindings } from "./types";
 
@@ -46,6 +47,9 @@ app.post("/outputs", requireAuth, postOutput);
 // Event routes
 app.get("/events/last", getEventsLast);
 app.post("/events", requireAuth, postEvent);
+
+// Usage routes
+app.get("/usage/:user", requireAuth, getUsageByUser);
 
 export default {
   async fetch(request: Request, env: Bindings, ctx: ExecutionContext): Promise<Response> {
