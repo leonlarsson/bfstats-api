@@ -14,7 +14,7 @@ export default async (c: Context<{ Bindings: Bindings }>) => {
 
     const foundUser = !!results[0].username;
 
-    return c.json(foundUser ? results : null, foundUser ? 200 : 404);
+    return c.json(foundUser ? results[0] : null, foundUser ? 200 : 404);
   } catch (error) {
     return handleAndLogD1Error(error);
   }
