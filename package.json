@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@nora-soderlund/cloudflare-d1-backups": "^0.9.21",
+    "@nora-soderlund/cloudflare-d1-backups": "^0.9.22",
     "hono": "^3.3.3",
     "zod": "^3.21.4"
   },
