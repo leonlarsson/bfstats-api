@@ -10,6 +10,10 @@ d1_databases = [
   { binding = "DB", database_name = "bfstats-new", database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10", preview_database_id = "e68dccd4-7bf7-4860-ba18-17978966ec10" },
 ]
 
+r2_buckets = [
+  { binding = "BUCKET", bucket_name = "d1-backups", preview_bucket_name = "d1-backups" },
+]
+
 # Trigger every Monday at 9 AM UTC. "0 * * * *" has been removed
 [triggers]
 crons = ["0 9 * * MON"]
