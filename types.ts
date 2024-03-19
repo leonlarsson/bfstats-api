@@ -79,7 +79,9 @@ export const D1OutputPayloadSchema = z.object({
   segment: z.string(),
   language: z.string(),
   messageURL: z.string(),
-  imageURL: z.string().nullable()
+  imageURL: z.string().nullable(),
+  // TODO: Make this required. Also remove "?? null" from the SQL query in the handler
+  identifier: z.string().optional()
 });
 
 export type D1EventPayload = z.infer<typeof D1EventPayloadSchema>;
