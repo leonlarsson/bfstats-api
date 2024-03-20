@@ -12,6 +12,7 @@ import getOutputsLast from "./handlers/outputs/getOutputsLast";
 import getOutputsCount from "./handlers/outputs/getOutputsCount";
 import getOutputsDaily from "./handlers/outputs/getOutputsDaily";
 import getOutputsDailyGames from "./handlers/outputs/getOutputsDailyGames";
+import getOutputByIdentifier from "./handlers/outputs/getOutputByIdentifier";
 import postOutput from "./handlers/outputs/postOutput";
 import getEventsLast from "./handlers/events/getEventsLast";
 import postEvent from "./handlers/events/postEvent";
@@ -43,6 +44,7 @@ app.get("/outputs/last", getOutputsLast);
 app.get("/outputs/counts", getOutputsCount);
 app.get("/outputs/daily", getOutputsDaily);
 app.get("/outputs/daily/games", getOutputsDailyGames);
+app.get("/outputs/:id", getOutputByIdentifier);
 app.post("/outputs", requireAuth, postOutput);
 
 // Event routes
