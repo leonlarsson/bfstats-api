@@ -9,6 +9,12 @@ export type Bindings = {
   EMAIL: string;
 };
 
+declare module "hono" {
+  export interface ContextVariableMap {
+    authorized: boolean;
+  }
+}
+
 const games = ["Battlefield 2042", "Battlefield V", "Battlefield 1", "Battlefield Hardline", "Battlefield 4", "Battlefield 3", "Battlefield Bad Company 2", "Battlefield 2"] as const;
 const languages = ["English", "French", "Italian", "German", "Spanish", "Russian", "Polish", "Brazilian Portuguese", "Turkish", "Swedish", "Norwegian", "Finnish", "Arabic"] as const;
 

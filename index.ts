@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import injectAuth from "./middleware/injectAuth";
 import requireAuth from "./middleware/requireAuth";
 import getBase from "./handlers/base/getBase";
 import postBase from "./handlers/base/postBase";
@@ -25,6 +26,9 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 // CORS middleware
 app.use("/*", cors());
+
+// Inject authorization middleware
+app.use("/*", injectAuth);
 
 // Base routes
 app.get("/base", getBase);
