@@ -70,7 +70,7 @@ export default {
       // Weekly email update and DB dump
       case "0 9 * * MON":
         ctx.waitUntil(sendEmail(env));
-        ctx.waitUntil(dumpDatabase(env));
+        // ctx.waitUntil(dumpDatabase(env));
         break;
     }
   }
