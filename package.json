@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "@nora-soderlund/cloudflare-d1-backups": "^0.9.22",
-    "hono": "^3.3.3",
-    "zod": "^3.21.4"
+    "hono": "^4.1.4",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230717.1"
