@@ -3,7 +3,6 @@
     "biome": "npx @biomejs/biome check --write ."
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.2.2",
     "hono": "^4.1.4",
     "zod": "^3.22.4"
   },

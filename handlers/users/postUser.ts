@@ -1,9 +1,14 @@
 import type { Context } from "hono";
-import type { Bindings, D1UserPayload } from "../../types";
+import { type Bindings, type D1UserPayload, D1UserPayloadSchema } from "../../types";
 import handleAndLogD1Error from "../../utils/handleAndLogD1Error";
 
 export default async (c: Context<{ Bindings: Bindings }>) => {
-  const body: D1UserPayload = await c.req.json();
+  const body: D1UserPayload = await c.req.json().catch(() => ({}));
+
+  // Verify the request body matches the schema
+  const bodyZodReturn = D1UserPayloadSchema.safeParse(body);
+  if (bodyZodReturn.success === false)
+    return c.json({ message: "Request body did not match schema.", error: bodyZodReturn.error }, 400);
   const { userId, username, language } = body;
 
   try {
