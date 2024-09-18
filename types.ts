@@ -3,7 +3,6 @@ import { z } from "zod";
 export type Bindings = {
   DB: D1Database;
   BUCKET: R2Bucket;
-  DATA_KV: KVNamespace;
   API_KEY: string;
   RESEND_API_KEY: string;
   EMAIL: string;

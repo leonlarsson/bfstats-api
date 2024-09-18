@@ -1,7 +1,10 @@
-import { BaseStatsObject, Bindings } from "../types";
+import { BaseStatsObjectSchema, Bindings } from "../types";
 
 export default async (env: Bindings) => {
-  const statsObject: BaseStatsObject = await env.DATA_KV.get("STATS", { type: "json" });
+  const statsObject = await env.DB.prepare("SELECT * FROM json_data")
+    .first<string>("data")
+    .then(data => JSON.parse(data))
+    .then(data => BaseStatsObjectSchema.parse(data));
 
   return fetch("https://api.resend.com/emails", {
     method: "POST",
