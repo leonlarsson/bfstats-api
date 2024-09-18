@@ -1,5 +1,5 @@
-import { Context, Next } from "hono";
-import { Bindings } from "../types";
+import type { Context, Next } from "hono";
+import type { Bindings } from "../types";
 
 export default async (c: Context<{ Bindings: Bindings }>, next: Next) => {
   const authorized = c.get("authorized");

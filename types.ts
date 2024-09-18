@@ -14,8 +14,31 @@ declare module "hono" {
   }
 }
 
-const games = ["Battlefield 2042", "Battlefield V", "Battlefield 1", "Battlefield Hardline", "Battlefield 4", "Battlefield 3", "Battlefield Bad Company 2", "Battlefield 2"] as const;
-const languages = ["English", "French", "Italian", "German", "Spanish", "Russian", "Polish", "Brazilian Portuguese", "Turkish", "Swedish", "Norwegian", "Finnish", "Arabic"] as const;
+const games = [
+  "Battlefield 2042",
+  "Battlefield V",
+  "Battlefield 1",
+  "Battlefield Hardline",
+  "Battlefield 4",
+  "Battlefield 3",
+  "Battlefield Bad Company 2",
+  "Battlefield 2",
+] as const;
+const languages = [
+  "English",
+  "French",
+  "Italian",
+  "German",
+  "Spanish",
+  "Russian",
+  "Polish",
+  "Brazilian Portuguese",
+  "Turkish",
+  "Swedish",
+  "Norwegian",
+  "Finnish",
+  "Arabic",
+] as const;
 
 export type BaseReceivedBody = z.infer<typeof BaseReceivedBodySchema>;
 export const BaseReceivedBodySchema = z.object({
@@ -24,7 +47,7 @@ export const BaseReceivedBodySchema = z.object({
   totalMembers: z.number().int(),
   incrementTotalStatsSent: z.boolean().optional(),
   game: z.enum(games).optional(),
-  language: z.enum(languages).optional()
+  language: z.enum(languages).optional(),
 });
 
 export type BaseStatsObject = z.infer<typeof BaseStatsObjectSchema>;
@@ -42,7 +65,7 @@ export const BaseStatsObjectSchema = z.object({
       "Battlefield 4": z.number().int(),
       "Battlefield 3": z.number().int(),
       "Battlefield Bad Company 2": z.number().int(),
-      "Battlefield 2": z.number().int()
+      "Battlefield 2": z.number().int(),
     }),
     languages: z.object({
       English: z.number().int(),
@@ -57,21 +80,21 @@ export const BaseStatsObjectSchema = z.object({
       Swedish: z.number().int(),
       Norwegian: z.number().int(),
       Finnish: z.number().int(),
-      Arabic: z.number().int()
-    })
+      Arabic: z.number().int(),
+    }),
   }),
   lastUpdated: z.object({
     date: z.string(),
     timestampMilliseconds: z.number().int(),
-    timestampSeconds: z.number().int()
-  })
+    timestampSeconds: z.number().int(),
+  }),
 });
 
 export type D1UserPayload = z.infer<typeof D1UserPayloadSchema>;
 export const D1UserPayloadSchema = z.object({
   userId: z.string(),
   username: z.string(),
-  language: z.string()
+  language: z.string(),
 });
 
 export type D1OutputPayload = z.infer<typeof D1OutputPayloadSchema>;
@@ -85,10 +108,10 @@ export const D1OutputPayloadSchema = z.object({
   language: z.string(),
   messageURL: z.string(),
   imageURL: z.string().nullable(),
-  identifier: z.string()
+  identifier: z.string(),
 });
 
 export type D1EventPayload = z.infer<typeof D1EventPayloadSchema>;
 export const D1EventPayloadSchema = z.object({
-  event: z.enum(["guildCreate", "guildDelete"])
+  event: z.enum(["guildCreate", "guildDelete"]),
 });

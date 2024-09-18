@@ -1,16 +1,16 @@
-import { BaseStatsObjectSchema, Bindings } from "../types";
+import { BaseStatsObjectSchema, type Bindings } from "../types";
 
 export default async (env: Bindings) => {
   const statsObject = await env.DB.prepare("SELECT * FROM json_data")
     .first<string>("data")
-    .then(data => JSON.parse(data))
-    .then(data => BaseStatsObjectSchema.parse(data));
+    .then((data) => JSON.parse(data))
+    .then((data) => BaseStatsObjectSchema.parse(data));
 
   return fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${env.RESEND_API_KEY}`
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
     },
     body: JSON.stringify({
       from: "Battlefield Stats Worker <bfstats@leonlarsson.com>",
@@ -27,15 +27,15 @@ export default async (env: Bindings) => {
             <h3>Games</h3>
             <ul>
             ${Object.entries(statsObject.totalStatsSent.games)
-              .map(x => `<li>${x[0]}: <b>${x[1].toLocaleString("en-US")}</b></li>`)
+              .map((x) => `<li>${x[0]}: <b>${x[1].toLocaleString("en-US")}</b></li>`)
               .join("\n")}
             </ul>
             <h3>Languages</h3>
             <ul>
             ${Object.entries(statsObject.totalStatsSent.languages)
-              .map(x => `<li>${x[0]}: <b>${x[1].toLocaleString("en-US")}</b></li>`)
+              .map((x) => `<li>${x[0]}: <b>${x[1].toLocaleString("en-US")}</b></li>`)
               .join("\n")}
-            </ul>`
-    })
+            </ul>`,
+    }),
   });
 };

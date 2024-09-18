@@ -1,5 +1,5 @@
-import { Context } from "hono";
-import { BaseReceivedBody, BaseReceivedBodySchema, BaseStatsObject, Bindings } from "../../types";
+import type { Context } from "hono";
+import { type BaseReceivedBody, BaseReceivedBodySchema, type BaseStatsObject, type Bindings } from "../../types";
 
 export default async (c: Context<{ Bindings: Bindings }>) => {
   const body: BaseReceivedBody = await c.req.json();
@@ -10,11 +10,18 @@ export default async (c: Context<{ Bindings: Bindings }>) => {
   // Get the stats from DB and edit it accordingly, before re-inserting
   const statsObject: BaseStatsObject = await c.env.DB.prepare("SELECT * FROM json_data")
     .first<string>("data")
-    .then(data => JSON.parse(data));
+    .then((data) => JSON.parse(data));
 
   // Verify the DB object matches the schema
   const dbZodReturn = BaseReceivedBodySchema.safeParse(statsObject);
-  if (dbZodReturn.success === false) return c.json({ message: "DB stats object doesn't match schema. Not updating DB. Received this ZodError.", error: dbZodReturn.error }, 500);
+  if (dbZodReturn.success === false)
+    return c.json(
+      {
+        message: "DB stats object doesn't match schema. Not updating DB. Received this ZodError.",
+        error: dbZodReturn.error,
+      },
+      500,
+    );
 
   // Update totalGuilds, totalChannels, totalMembers
   statsObject.totalGuilds = totalGuilds;
@@ -30,7 +37,11 @@ export default async (c: Context<{ Bindings: Bindings }>) => {
 
   // Add lastUpdated to the object
   const date = new Date();
-  statsObject.lastUpdated = { date: date.toUTCString(), timestampMilliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) };
+  statsObject.lastUpdated = {
+    date: date.toUTCString(),
+    timestampMilliseconds: date.valueOf(),
+    timestampSeconds: Math.floor(date.valueOf() / 1000),
+  };
 
   // Insert the updated object back into the DB
   await c.env.DB.prepare("UPDATE json_data SET data = ? WHERE ROWID = 1").bind(JSON.stringify(statsObject)).run();

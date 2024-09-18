@@ -1,27 +1,33 @@
+import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { zValidator } from "@hono/zod-validator";
-import { ZodSchema } from "zod";
-import injectAuth from "./middleware/injectAuth";
-import requireAuth from "./middleware/requireAuth";
+import type { ZodSchema } from "zod";
 import getBase from "./handlers/base/getBase";
 import postBase from "./handlers/base/postBase";
 import getD1Query from "./handlers/d1/getD1Query";
-import getUsersTop from "./handlers/users/getUsersTop";
-import getUsersCount from "./handlers/users/getUsersCount";
-import getUsersSpecial from "./handlers/users/getUsersSpecial";
-import postUser from "./handlers/users/postUser";
-import getOutputsLast from "./handlers/outputs/getOutputsLast";
+import getEventsLast from "./handlers/events/getEventsLast";
+import postEvent from "./handlers/events/postEvent";
+import getOutputByIdentifier from "./handlers/outputs/getOutputByIdentifier";
 import getOutputsCount from "./handlers/outputs/getOutputsCount";
 import getOutputsDaily from "./handlers/outputs/getOutputsDaily";
 import getOutputsDailyGames from "./handlers/outputs/getOutputsDailyGames";
-import getOutputByIdentifier from "./handlers/outputs/getOutputByIdentifier";
+import getOutputsLast from "./handlers/outputs/getOutputsLast";
 import postOutput from "./handlers/outputs/postOutput";
-import getEventsLast from "./handlers/events/getEventsLast";
-import postEvent from "./handlers/events/postEvent";
 import getUsageByUser from "./handlers/usage/getUsageByUser";
+import getUsersCount from "./handlers/users/getUsersCount";
+import getUsersSpecial from "./handlers/users/getUsersSpecial";
+import getUsersTop from "./handlers/users/getUsersTop";
+import postUser from "./handlers/users/postUser";
+import injectAuth from "./middleware/injectAuth";
+import requireAuth from "./middleware/requireAuth";
+import {
+  BaseReceivedBodySchema,
+  type Bindings,
+  D1EventPayloadSchema,
+  D1OutputPayloadSchema,
+  D1UserPayloadSchema,
+} from "./types";
 import sendEmail from "./utils/sendEmail";
-import { BaseReceivedBodySchema, Bindings, D1EventPayloadSchema, D1OutputPayloadSchema, D1UserPayloadSchema } from "./types";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -72,5 +78,5 @@ export default {
         ctx.waitUntil(sendEmail(env));
         break;
     }
-  }
+  },
 };
