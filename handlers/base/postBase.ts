@@ -11,12 +11,14 @@ export default async (c: Context<{ Bindings: Bindings }>) => {
   // At least totalGuilds, totalChannels, totalMembers are guaranteed to be present and numbers
   const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent, game, language } = body;
 
-  // Get the KV STATS object and edit it accordingly, before .put()ing it back
-  const statsObject: BaseStatsObject = await c.env.DATA_KV.get("STATS", { type: "json" });
+  // Get the stats from DB and edit it accordingly, before re-inserting
+  const statsObject: BaseStatsObject = await c.env.DB.prepare("SELECT * FROM json_data")
+    .first<string>("data")
+    .then(data => JSON.parse(data));
 
-  // Verify the KV object matches the schema
-  const kvZodReturn = BaseReceivedBodySchema.safeParse(statsObject);
-  if (kvZodReturn.success === false) return c.json({ message: "KV statsObject doesn't match schema. Not updating KV. Received this ZodError.", error: kvZodReturn.error }, 500);
+  // Verify the DB object matches the schema
+  const dbZodReturn = BaseReceivedBodySchema.safeParse(statsObject);
+  if (dbZodReturn.success === false) return c.json({ message: "DB stats object doesn't match schema. Not updating DB. Received this ZodError.", error: dbZodReturn.error }, 500);
 
   // Update totalGuilds, totalChannels, totalMembers
   statsObject.totalGuilds = totalGuilds;
@@ -34,8 +36,8 @@ export default async (c: Context<{ Bindings: Bindings }>) => {
   const date = new Date();
   statsObject.lastUpdated = { date: date.toUTCString(), timestampMilliseconds: date.valueOf(), timestampSeconds: Math.floor(date.valueOf() / 1000) };
 
-  // .put() the edited object
-  await c.env.DATA_KV.put("STATS", JSON.stringify(statsObject));
+  // Insert the updated object back into the DB
+  await c.env.DB.prepare("UPDATE json_data SET data = ? WHERE ROWID = 1").bind(JSON.stringify(statsObject)).run();
 
-  return c.json({ message: "Data posted to KV.", data: statsObject });
+  return c.json({ message: "Data posted to DB.", data: statsObject });
 };
