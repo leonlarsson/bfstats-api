@@ -20,7 +20,6 @@ import postOutput from "./handlers/outputs/postOutput";
 import getEventsLast from "./handlers/events/getEventsLast";
 import postEvent from "./handlers/events/postEvent";
 import getUsageByUser from "./handlers/usage/getUsageByUser";
-import dumpDatabase from "./handlers/dump/dumpDatabase";
 import sendEmail from "./utils/sendEmail";
 import { BaseReceivedBodySchema, Bindings, D1EventPayloadSchema, D1OutputPayloadSchema, D1UserPayloadSchema } from "./types";
 
@@ -62,19 +61,15 @@ app.post("/events", requireAuth, v(D1EventPayloadSchema), postEvent);
 // Usage route
 app.get("/usage/:user", requireAuth, getUsageByUser);
 
-// Dump route
-app.post("/dump", requireAuth, c => dumpDatabase(c.env));
-
 export default {
   async fetch(request: Request, env: Bindings, ctx: ExecutionContext): Promise<Response> {
     return app.fetch(request, env, ctx);
   },
   scheduled(event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
     switch (event.cron) {
-      // Weekly email update and DB dump
+      // Weekly email update
       case "0 9 * * MON":
         ctx.waitUntil(sendEmail(env));
-        // ctx.waitUntil(dumpDatabase(env));
         break;
     }
   }
