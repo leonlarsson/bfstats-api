@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@hono/zod-validator": "^0.2.2",
     "@nora-soderlund/cloudflare-d1-backups": "^0.9.22",
     "hono": "^4.1.4",
     "zod": "^3.22.4"

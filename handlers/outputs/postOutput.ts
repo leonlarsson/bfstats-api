@@ -1,13 +1,9 @@
 import { Context } from "hono";
-import { Bindings, D1OutputPayload, D1OutputPayloadSchema } from "../../types";
+import { Bindings, D1OutputPayload } from "../../types";
 import handleAndLogD1Error from "../../utils/handleAndLogD1Error";
 
 export default async (c: Context<{ Bindings: Bindings }>) => {
-  const body: D1OutputPayload = await c.req.json().catch(() => ({}));
-
-  // Verify the request body matches the schema
-  const bodyZodReturn = D1OutputPayloadSchema.safeParse(body);
-  if (bodyZodReturn.success === false) return c.json({ message: "Request body did not match schema.", error: bodyZodReturn.error }, 400);
+  const body: D1OutputPayload = await c.req.json();
   const { userId, username, guildName, guildId, game, segment, language, messageURL, imageURL, identifier } = body;
 
   try {

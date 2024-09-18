@@ -1,5 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { zValidator } from "@hono/zod-validator";
+import { ZodSchema } from "zod";
 import injectAuth from "./middleware/injectAuth";
 import requireAuth from "./middleware/requireAuth";
 import getBase from "./handlers/base/getBase";
@@ -20,9 +22,11 @@ import postEvent from "./handlers/events/postEvent";
 import getUsageByUser from "./handlers/usage/getUsageByUser";
 import dumpDatabase from "./handlers/dump/dumpDatabase";
 import sendEmail from "./utils/sendEmail";
-import { Bindings } from "./types";
+import { BaseReceivedBodySchema, Bindings, D1EventPayloadSchema, D1OutputPayloadSchema, D1UserPayloadSchema } from "./types";
 
 const app = new Hono<{ Bindings: Bindings }>();
+
+const v = (schema: ZodSchema) => zValidator("json", schema);
 
 // CORS middleware
 app.use("/*", cors());
@@ -32,7 +36,7 @@ app.use("/*", injectAuth);
 
 // Base routes
 app.get("/base", getBase);
-app.post("/base", requireAuth, postBase);
+app.post("/base", requireAuth, v(BaseReceivedBodySchema), postBase);
 
 // D1 base route
 app.get("/d1-query", requireAuth, getD1Query);
@@ -41,7 +45,7 @@ app.get("/d1-query", requireAuth, getD1Query);
 app.get("/users/top", getUsersTop);
 app.get("/users/counts", getUsersCount);
 app.get("/users/special", getUsersSpecial);
-app.post("/users", requireAuth, postUser);
+app.post("/users", requireAuth, v(D1UserPayloadSchema), postUser);
 
 // Output routes
 app.get("/outputs/last", getOutputsLast);
@@ -49,11 +53,11 @@ app.get("/outputs/counts", getOutputsCount);
 app.get("/outputs/daily", getOutputsDaily);
 app.get("/outputs/daily/games", getOutputsDailyGames);
 app.get("/outputs/:id", getOutputByIdentifier);
-app.post("/outputs", requireAuth, postOutput);
+app.post("/outputs", requireAuth, v(D1OutputPayloadSchema), postOutput);
 
 // Event routes
 app.get("/events/last", getEventsLast);
-app.post("/events", requireAuth, postEvent);
+app.post("/events", requireAuth, v(D1EventPayloadSchema), postEvent);
 
 // Usage route
 app.get("/usage/:user", requireAuth, getUsageByUser);

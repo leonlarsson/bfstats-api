@@ -2,11 +2,7 @@ import { Context } from "hono";
 import { BaseReceivedBody, BaseReceivedBodySchema, BaseStatsObject, Bindings } from "../../types";
 
 export default async (c: Context<{ Bindings: Bindings }>) => {
-  const body = (await c.req.json().catch(() => ({}))) as BaseReceivedBody;
-
-  // Verify the request body matches the schema
-  const bodyZodReturn = BaseReceivedBodySchema.safeParse(body);
-  if (bodyZodReturn.success === false) return c.json({ message: "Request body did not match schema.", error: bodyZodReturn.error }, 400);
+  const body: BaseReceivedBody = await c.req.json();
 
   // At least totalGuilds, totalChannels, totalMembers are guaranteed to be present and numbers
   const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent, game, language } = body;
