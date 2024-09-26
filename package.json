@@ -1,5 +1,8 @@
 {
   "scripts": {
+    "dev": "wrangler dev",
+    "dev:remote": "wrangler dev --remote",
+    "deploy": "wrangler deploy --minify",
     "biome": "npx @biomejs/biome check --write ."
   },
   "dependencies": {
@@ -8,6 +11,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.1",
-    "@cloudflare/workers-types": "^4.20240909.0"
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "wrangler": "^3.78.10"
   }
 }
