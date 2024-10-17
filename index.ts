@@ -10,6 +10,7 @@ import getOutputsCount from "./handlers/outputs/getOutputsCount";
 import getOutputsCountLastWeek from "./handlers/outputs/getOutputsCountLast7Days";
 import getOutputsDaily from "./handlers/outputs/getOutputsDaily";
 import getOutputsDailyGames from "./handlers/outputs/getOutputsDailyGames";
+import getOutputsDailyGamesNoGaps from "./handlers/outputs/getOutputsDailyGamesNoGaps";
 import getOutputsLast from "./handlers/outputs/getOutputsLast";
 import postOutput from "./handlers/outputs/postOutput";
 import getUsageByUser from "./handlers/usage/getUsageByUser";
@@ -49,6 +50,7 @@ app.get("/outputs/counts", getOutputsCount);
 app.get("/outputs/counts/last-7-days", getOutputsCountLastWeek);
 app.get("/outputs/daily", getOutputsDaily);
 app.get("/outputs/daily/games", getOutputsDailyGames);
+app.get("/outputs/daily/games-no-gaps", getOutputsDailyGamesNoGaps);
 app.get("/outputs/:id", getOutputByIdentifier);
 app.post("/outputs", requireAuth, postOutput);
 
