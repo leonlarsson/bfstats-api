@@ -1,5 +1,5 @@
 name = "bfstats"
-main = "./index.ts"
+main = "src/index.ts"
 compatibility_date = "2023-07-24"
 
 d1_databases = [
