@@ -1,6 +1,9 @@
 import { configureOpenAPI } from "./lib/configure-open-api";
 import { createApp } from "./lib/create-app";
-import eventsIndex from "./routes/events/events.index";
+import { baseRouter } from "./routes/base/base.index";
+import { eventsRouter } from "./routes/events/events.index";
+import { outputsRouter } from "./routes/outputs/outputs.index";
+import { usersRouter } from "./routes/users/users.index";
 
 const app = createApp();
 
@@ -8,7 +11,7 @@ const app = createApp();
 configureOpenAPI(app);
 
 // Add each route to the app
-const routes = [eventsIndex] as const;
+const routes = [baseRouter, outputsRouter, usersRouter, eventsRouter] as const;
 for (const route of routes) {
   app.route("/", route);
 }

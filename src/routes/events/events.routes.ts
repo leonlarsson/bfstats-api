@@ -1,8 +1,8 @@
 import { createRoute } from "@hono/zod-openapi";
 import { authentication } from "../../middleware/authentication";
 import { EventSchema } from "../../schemas/entities/event";
-import { D1EventPayloadSchema } from "../../types";
-import { standard500Response } from "../../utils/openApiStandards";
+import { EventPayloadSchema } from "../../schemas/payloads/event";
+import { standard200Or201Response, standard500Response } from "../../utils/openApiStandards";
 
 const tags = ["Events"];
 
@@ -32,15 +32,14 @@ export const create = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: D1EventPayloadSchema,
+          schema: EventPayloadSchema,
         },
       },
     },
   },
   responses: {
-    201: {
-      description: "Event created",
-    },
+    201: standard200Or201Response,
+    500: standard500Response,
   },
 });
 

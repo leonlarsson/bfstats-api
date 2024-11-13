@@ -34,10 +34,6 @@ export const configureOpenAPI = (app: AppOpenAPI) => {
         name: "Events",
         description: "Event data",
       },
-      {
-        name: "Usage",
-        description: "Usage data",
-      },
     ],
     servers: [
       {

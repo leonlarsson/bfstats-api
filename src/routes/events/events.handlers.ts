@@ -22,9 +22,8 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
   try {
     await c.get("db").insert(events).values({
       event,
-      date: new Date().getTime(),
     });
-    return c.json({ message: "Event created" }, 201);
+    return c.text("ok", 201);
   } catch (error: any) {
     return handleAndLogError(c, error);
   }
