@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { index, integer, numeric, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const outputs = sqliteTable(
@@ -10,7 +11,7 @@ export const outputs = sqliteTable(
     game: text().notNull(),
     segment: text().notNull(),
     language: text().notNull(),
-    date: text().default("sql`(strftime('%Y-%m-%d %H:%M:%S', 'now'))`").notNull(),
+    date: text().default(sql`(strftime('%Y-%m-%d %H:%M:%S', 'now'))`).notNull(),
     messageUrl: text(),
     imageUrl: text(),
     identifier: text(),
@@ -27,14 +28,14 @@ export const outputs = sqliteTable(
 export const users = sqliteTable("users", {
   userId: text().primaryKey().notNull(),
   username: text().notNull(),
-  lastStatsSent: text().default("sql`(strftime('%Y-%m-%d %H:%M:%S', 'now'))`").notNull(),
+  lastStatsSent: text().default(sql`(strftime('%Y-%m-%d %H:%M:%S', 'now'))`).notNull(),
   lastLanguage: text().notNull(),
   totalStatsSent: integer().default(1).notNull(),
 });
 
 export const events = sqliteTable("events", {
   event: text().notNull(),
-  date: text().default("sql`(strftime('%Y-%m-%d %H:%M:%S', 'now'))`").notNull(),
+  date: text().default(sql`(strftime('%Y-%m-%d %H:%M:%S', 'now'))`).notNull(),
 });
 
 export const jsonData = sqliteTable("json_data", {
