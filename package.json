@@ -8,12 +8,14 @@
   "dependencies": {
     "@hono/zod-openapi": "^0.16.4",
     "@scalar/hono-api-reference": "^0.5.159",
+    "drizzle-orm": "^0.36.1",
     "hono": "^4.6.9",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.1",
     "@cloudflare/workers-types": "^4.20241112.0",
+    "drizzle-kit": "^0.28.0",
     "wrangler": "^3.78.10"
   }
 }

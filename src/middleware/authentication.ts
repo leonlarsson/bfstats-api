@@ -1,6 +1,6 @@
 import type { Context, Next } from "hono";
 import { bearerAuth } from "hono/bearer-auth";
-import type { Bindings } from "../types";
+import type { CloudflareBindings } from "../types";
 
-export const authentication = (c: Context<{ Bindings: Bindings }>, next: Next) =>
+export const authentication = (c: Context<{ Bindings: CloudflareBindings }>, next: Next) =>
   bearerAuth({ token: c.env.API_KEY })(c, next);

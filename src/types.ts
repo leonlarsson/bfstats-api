@@ -1,4 +1,7 @@
+import type { OpenAPIHono, RouteConfig, RouteHandler } from "@hono/zod-openapi";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
 import { z } from "zod";
+import type * as schema from "./db/schema";
 
 export interface CloudflareBindings {
   DB: D1Database;
@@ -7,6 +10,15 @@ export interface CloudflareBindings {
   RESEND_API_KEY: string;
   EMAIL: string;
 }
+
+declare module "hono" {
+  export interface ContextVariableMap {
+    db: DrizzleD1Database<typeof schema>;
+  }
+}
+
+export type AppOpenAPI = OpenAPIHono<{ Bindings: CloudflareBindings }>;
+export type AppRouteHandler<R extends RouteConfig> = RouteHandler<R, { Bindings: CloudflareBindings }>;
 
 const games = [
   "Battlefield 2042",
