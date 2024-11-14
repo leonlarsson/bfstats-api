@@ -1,9 +1,9 @@
+import { authentication } from "@/middleware/authentication";
+import { cache } from "@/middleware/cache";
+import { EventSchema } from "@/schemas/entities/event";
+import { EventPayloadSchema } from "@/schemas/payloads/event";
+import { standard200Or201Response, standard500Response } from "@/utils/openApiStandards";
 import { createRoute } from "@hono/zod-openapi";
-import { authentication } from "../../middleware/authentication";
-import { cache } from "../../middleware/cache";
-import { EventSchema } from "../../schemas/entities/event";
-import { EventPayloadSchema } from "../../schemas/payloads/event";
-import { standard200Or201Response, standard500Response } from "../../utils/openApiStandards";
 
 const tags = ["Events"];
 

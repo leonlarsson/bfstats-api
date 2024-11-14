@@ -9,5 +9,6 @@
   },
   "[sql]": {
     "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
-  }
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }

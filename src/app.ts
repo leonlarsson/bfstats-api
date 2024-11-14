@@ -1,9 +1,9 @@
-import { configureOpenAPI } from "./lib/configure-open-api";
-import { createApp } from "./lib/create-app";
-import { baseRouter } from "./routes/base/base.index";
-import { eventsRouter } from "./routes/events/events.index";
-import { outputsRouter } from "./routes/outputs/outputs.index";
-import { usersRouter } from "./routes/users/users.index";
+import { configureOpenAPI } from "@/lib/configure-open-api";
+import { createApp } from "@/lib/create-app";
+import { baseRouter } from "@/routes/base/base.index";
+import { eventsRouter } from "@/routes/events/events.index";
+import { outputsRouter } from "@/routes/outputs/outputs.index";
+import { usersRouter } from "@/routes/users/users.index";
 
 const app = createApp();
 

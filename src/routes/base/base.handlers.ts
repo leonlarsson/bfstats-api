@@ -1,6 +1,6 @@
-import { BaseDataPayloadSchema } from "../../schemas/payloads/base";
-import type { AppRouteHandler } from "../../types";
-import { handleAndLogError } from "../../utils/handleAndLogError";
+import { BaseDataPayloadSchema } from "@/schemas/payloads/base";
+import type { AppRouteHandler } from "@/types";
+import { handleAndLogError } from "@/utils/handleAndLogError";
 import type { GetDataRoute, UpdateDataRoute } from "./base.routes";
 
 export const getData: AppRouteHandler<GetDataRoute> = async (c) => {

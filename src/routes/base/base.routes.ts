@@ -1,9 +1,9 @@
+import { authentication } from "@/middleware/authentication";
+import { cache } from "@/middleware/cache";
+import { BaseDataSchema } from "@/schemas/entities/base";
+import { BaseDataPayloadSchema } from "@/schemas/payloads/base";
+import { standard200Or201Response, standard500Response } from "@/utils/openApiStandards";
 import { createRoute } from "@hono/zod-openapi";
-import { authentication } from "../../middleware/authentication";
-import { cache } from "../../middleware/cache";
-import { BaseDataSchema } from "../../schemas/entities/base";
-import { BaseDataPayloadSchema } from "../../schemas/payloads/base";
-import { standard200Or201Response, standard500Response } from "../../utils/openApiStandards";
 
 const tags = ["Base"];
 

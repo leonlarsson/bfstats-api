@@ -1,7 +1,7 @@
+import { outputs, users } from "@/db/schema";
+import type { AppRouteHandler } from "@/types";
+import { handleAndLogError } from "@/utils/handleAndLogError";
 import { desc, eq, sql } from "drizzle-orm";
-import { outputs, users } from "../../db/schema";
-import type { AppRouteHandler } from "../../types";
-import { handleAndLogError } from "../../utils/handleAndLogError";
 import type { CountRoute, CreateRoute, TopRoute, UsageByUserIdRoute } from "./users.routes";
 
 export const count: AppRouteHandler<CountRoute> = async (c) => {

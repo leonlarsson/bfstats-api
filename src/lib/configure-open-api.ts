@@ -1,6 +1,6 @@
+import { registerAuthComponent } from "@/components/auth";
+import type { AppOpenAPI } from "@/types";
 import { apiReference } from "@scalar/hono-api-reference";
-import { registerAuthComponent } from "../components/auth";
-import type { AppOpenAPI } from "../types";
 
 export const configureOpenAPI = (app: AppOpenAPI) => {
   registerAuthComponent(app);

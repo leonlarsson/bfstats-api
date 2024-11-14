@@ -1,7 +1,6 @@
-import { createRouter } from "../../lib/create-app";
-
-import * as handlers from "../outputs/outputs.handlers";
-import * as routes from "../outputs/outputs.routes";
+import { createRouter } from "@/lib/create-app";
+import * as handlers from "./outputs.handlers";
+import * as routes from "./outputs.routes";
 
 export const outputsRouter = createRouter()
   .openapi(routes.getByIdentifier, handlers.getByIdentifier)

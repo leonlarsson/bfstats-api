@@ -1,6 +1,6 @@
+import type * as schema from "@/db/schema";
 import type { OpenAPIHono, RouteConfig, RouteHandler } from "@hono/zod-openapi";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-import type * as schema from "./db/schema";
 
 export interface CloudflareBindings {
   DB: D1Database;

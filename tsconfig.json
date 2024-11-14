@@ -8,6 +8,10 @@
     "lib": ["ESNext"],
     "types": ["@cloudflare/workers-types/2023-07-01", "@types/node"],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    "verbatimModuleSyntax": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

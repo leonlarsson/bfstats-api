@@ -1,7 +1,7 @@
+import { outputs } from "@/db/schema";
+import type { AppRouteHandler } from "@/types";
+import { handleAndLogError } from "@/utils/handleAndLogError";
 import { desc, eq, like, or, sql } from "drizzle-orm";
-import { outputs } from "../../db/schema";
-import type { AppRouteHandler } from "../../types";
-import { handleAndLogError } from "../../utils/handleAndLogError";
 import type {
   CountsLast7DaysRoute,
   CountsRoute,

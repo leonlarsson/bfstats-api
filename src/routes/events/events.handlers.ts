@@ -1,13 +1,13 @@
+import { events } from "@/db/schema";
+import type { AppRouteHandler } from "@/types";
+import { handleAndLogError } from "@/utils/handleAndLogError";
 import { desc } from "drizzle-orm";
-import { events, outputs } from "../../db/schema";
-import type { AppRouteHandler } from "../../types";
-import { handleAndLogError } from "../../utils/handleAndLogError";
 import type { CreateRoute, RecentRoute } from "./events.routes";
 
 export const recent: AppRouteHandler<RecentRoute> = async (c) => {
   try {
     const results = await c.get("db").query.events.findMany({
-      orderBy: [desc(outputs.date)],
+      orderBy: [desc(events.date)],
       limit: 20,
     });
     return c.json(results, 200);

@@ -1,4 +1,4 @@
-import { standard500ResponseSchema, standardCreatedResponseSchema } from "../schemas/responses";
+import { standard500ResponseSchema, standardCreatedResponseSchema } from "@/schemas/responses";
 
 export const standard500Response = {
   description: "Something went wrong",
