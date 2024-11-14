@@ -14,7 +14,7 @@ export const getByIdentifier = createRoute({
   description: "Get an output by identifier.",
   request: {
     query: z.object({
-      identifier: z.string(),
+      identifier: z.string().openapi({ description: "The full or partial identifier of the output.", example: "yim" }),
     }),
   },
   responses: {
@@ -49,10 +49,10 @@ export const recent = createRoute({
   path: "/outputs/recent",
   tags: ["Outputs"],
   summary: "Recent outputs",
-  description: "Get the last 20 outputs.",
+  description: "Get the 20 most recent outputs.",
   responses: {
     200: {
-      description: "The last 20 outputs",
+      description: "The 20 most recent outputs",
       content: {
         "application/json": {
           schema: OutputSchema.pick({
@@ -61,7 +61,27 @@ export const recent = createRoute({
             language: true,
             date: true,
             identifier: true,
-          }).array(),
+          })
+            .array()
+            .openapi({
+              description: "The 20 most recent outputs.",
+              example: [
+                {
+                  game: "Battlefield 2042",
+                  segment: "Overview",
+                  language: "English",
+                  date: "2024-11-14 19:04:40",
+                  identifier: "LBEk8An7EFqwRavBf1",
+                },
+                {
+                  game: "Battlefield 2042",
+                  segment: "Hazard Zone",
+                  language: "English",
+                  date: "2024-11-14 18:59:04",
+                  identifier: "CBy6RNaOjRd80v7ltA",
+                },
+              ],
+            }),
         },
       },
     },
@@ -82,10 +102,11 @@ export const daily = createRoute({
         "application/json": {
           schema: z
             .object({
-              day: z.string(),
-              sent: z.number(),
+              day: z.string().openapi({ description: "The day the usage was recorded.", example: "2024-03-22" }),
+              sent: z.number().openapi({ description: "The number of outputs sent that day.", example: 5 }),
             })
-            .array(),
+            .array()
+            .openapi({ description: "The usage data per day." }),
         },
       },
     },
@@ -106,12 +127,15 @@ export const dailyGames = createRoute({
         "application/json": {
           schema: z
             .object({
-              day: z.string(),
-              game: z.string(),
-              sent: z.number(),
-              total_sent: z.number(),
+              day: z.string().openapi({ description: "The day the usage was recorded.", example: "2024-03-22" }),
+              game: z.string().openapi({ description: "The game the usage is from.", example: "Battlefield 2042" }),
+              sent: z
+                .number()
+                .openapi({ description: "The number of outputs sent that day for that game.", example: 42 }),
+              totalSent: z.number().openapi({ description: "The total number of outputs sent that day.", example: 69 }),
             })
-            .array(),
+            .array()
+            .openapi({ description: "The usage data per day per game." }),
         },
       },
     },
@@ -132,12 +156,15 @@ export const dailyGamesNoGaps = createRoute({
         "application/json": {
           schema: z
             .object({
-              day: z.string(),
-              game: z.string(),
-              sent: z.number(),
-              total_sent: z.number(),
+              day: z.string().openapi({ description: "The day the usage was recorded.", example: "2024-03-22" }),
+              game: z.string().openapi({ description: "The game the usage is from.", example: "Battlefield 2042" }),
+              sent: z
+                .number()
+                .openapi({ description: "The number of outputs sent that day for that game.", example: 42 }),
+              totalSent: z.number().openapi({ description: "The total number of outputs sent that day.", example: 69 }),
             })
-            .array(),
+            .array()
+            .openapi({ description: "The usage data per day per game." }),
         },
       },
     },
@@ -149,18 +176,23 @@ export const counts = createRoute({
   method: "get",
   path: "/outputs/counts",
   tags,
+  summary: "Output counts",
+  description: "Get basic usage data per game, segment, and language.",
   responses: {
     200: {
-      description: "Get basic usage data per game, segment, and language.",
+      description: "The usage data",
       content: {
         "application/json": {
           schema: z
             .object({
-              category: z.string(),
-              item: z.string(),
-              sent: z.number(),
+              category: z
+                .enum(["game", "segment", "language"])
+                .openapi({ description: "The category type of the data.", example: "language" }),
+              item: z.string().openapi({ description: "The name of the category item.", example: "English" }),
+              sent: z.number().openapi({ description: "The number of outputs sent.", example: 56 }),
             })
-            .array(),
+            .array()
+            .openapi({ description: "The usage data per category and item." }),
         },
       },
     },
@@ -172,18 +204,23 @@ export const countsLast7Days = createRoute({
   method: "get",
   path: "/outputs/counts-last-7-days",
   tags,
+  summary: "Output counts (7 days)",
+  description: "Get basic usage data per game, segment, and language for the last 7 days.",
   responses: {
     200: {
-      description: "Get basic usage data per game, segment, and language for the last 7 days.",
+      description: "The usage data",
       content: {
         "application/json": {
           schema: z
             .object({
-              category: z.string(),
-              item: z.string(),
-              sent: z.number(),
+              category: z
+                .enum(["game", "segment", "language"])
+                .openapi({ description: "The category type of the data.", example: "language" }),
+              item: z.string().openapi({ description: "The name of the category item.", example: "English" }),
+              sent: z.number().openapi({ description: "The number of outputs sent.", example: 56 }),
             })
-            .array(),
+            .array()
+            .openapi({ description: "The usage data per category and item." }),
         },
       },
     },
@@ -196,8 +233,8 @@ export const create = createRoute({
   path: "/outputs",
   tags: ["Outputs"],
   middleware: [authentication],
-  summary: "Post output",
-  description: "Post an output.",
+  summary: "Create output",
+  description: "create an output.",
   request: {
     body: {
       content: {

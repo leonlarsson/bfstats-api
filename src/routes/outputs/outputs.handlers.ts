@@ -78,7 +78,7 @@ export const daily: AppRouteHandler<DailyRoute> = async (c) => {
 export const dailyGames: AppRouteHandler<DailyGamesRoute> = async (c) => {
   try {
     const { results } = await c.env.DB.prepare(
-      "SELECT main.day, main.game, main.sent, totals.total_sent FROM (SELECT strftime('%Y-%m-%d', date) AS day, game, COUNT(*) AS sent FROM outputs GROUP BY day, game) main JOIN (SELECT strftime('%Y-%m-%d', date) AS day, COUNT(*) AS total_sent FROM outputs GROUP BY day) totals ON main.day = totals.day",
+      "SELECT main.day, main.game, main.sent, totals.totalSent FROM (SELECT strftime('%Y-%m-%d', date) AS day, game, COUNT(*) AS sent FROM outputs GROUP BY day, game) main JOIN (SELECT strftime('%Y-%m-%d', date) AS day, COUNT(*) AS totalSent FROM outputs GROUP BY day) totals ON main.day = totals.day",
     ).all();
 
     return c.json(results, 200);
@@ -113,11 +113,11 @@ export const dailyGamesNoGaps: AppRouteHandler<DailyGamesNoGapsRoute> = async (c
     ),
     totals AS (
       -- Get the total count of 'sent' for each day
-      SELECT strftime('%Y-%m-%d', date) AS day, COUNT(*) AS total_sent
+      SELECT strftime('%Y-%m-%d', date) AS day, COUNT(*) AS totalSent
       FROM outputs GROUP BY day
       )
       -- Perform the left join to fill in missing dates and games
-      SELECT combined.day, combined.game, IFNULL(main.sent, 0) AS sent, totals.total_sent
+      SELECT combined.day, combined.game, IFNULL(main.sent, 0) AS sent, totals.totalSent
       FROM combined
       LEFT JOIN main ON combined.day = main.day AND combined.game = main.game
       LEFT JOIN totals ON combined.day = totals.day

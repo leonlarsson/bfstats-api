@@ -10,12 +10,30 @@ export const recent = createRoute({
   method: "get",
   path: "/events/recent",
   tags,
+  summary: "Recent events",
+  description: "Get the 20 most recent events.",
   responses: {
     200: {
-      description: "The most recent events",
+      description: "The 20 most recent events",
       content: {
         "application/json": {
-          schema: EventSchema.array(),
+          schema: EventSchema.array().openapi({
+            description: "The 20 most recent events.",
+            example: [
+              {
+                event: "guildCreate",
+                date: "2024-11-14 18:56:02",
+              },
+              {
+                event: "guildDelete",
+                date: "2024-11-14 16:23:55",
+              },
+              {
+                event: "guildCreate",
+                date: "2024-11-14 16:18:25",
+              },
+            ],
+          }),
         },
       },
     },
@@ -27,6 +45,8 @@ export const create = createRoute({
   method: "post",
   path: "/events",
   tags,
+  summary: "Create event",
+  description: "Create an event.",
   middleware: [authentication],
   request: {
     body: {
