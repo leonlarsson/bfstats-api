@@ -1,5 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { authentication } from "../../middleware/authentication";
+import { cache } from "../../middleware/cache";
 import { OutputSchema } from "../../schemas/entities/output";
 import { OutputPayloadSchema } from "../../schemas/payloads/output";
 import { standard200Or201Response, standard500Response } from "../../utils/openApiStandards";
@@ -12,6 +13,7 @@ export const getByIdentifier = createRoute({
   tags: ["Outputs"],
   summary: "Output by identifier",
   description: "Get an output by identifier.",
+  middleware: [cache("output-by-identifier", 60)],
   request: {
     query: z.object({
       identifier: z.string().openapi({ description: "The full or partial identifier of the output.", example: "yim" }),
@@ -50,6 +52,7 @@ export const recent = createRoute({
   tags: ["Outputs"],
   summary: "Recent outputs",
   description: "Get the 20 most recent outputs.",
+  middleware: [cache("outputs-recent", 1)],
   responses: {
     200: {
       description: "The 20 most recent outputs",
@@ -95,6 +98,7 @@ export const daily = createRoute({
   tags: ["Outputs"],
   summary: "Daily output counts",
   description: "Get daily usage per day.",
+  middleware: [cache("outputs-daily", 20)],
   responses: {
     200: {
       description: "The usage data",
@@ -120,6 +124,7 @@ export const dailyGames = createRoute({
   tags: ["Outputs"],
   summary: "Daily output counts per game",
   description: "Get daily usage per day per game.",
+  middleware: [cache("outputs-daily-games", 20)],
   responses: {
     200: {
       description: "The usage data",
@@ -149,6 +154,7 @@ export const dailyGamesNoGaps = createRoute({
   tags: ["Outputs"],
   summary: "Daily output counts per game (no gaps)",
   description: "Get daily usage per day per game without gaps.",
+  middleware: [cache("outputs-daily-games-no-gaps", 20)],
   responses: {
     200: {
       description: "The usage data",
@@ -178,6 +184,7 @@ export const counts = createRoute({
   tags,
   summary: "Output counts",
   description: "Get basic usage data per game, segment, and language.",
+  middleware: [cache("outputs-counts", 20)],
   responses: {
     200: {
       description: "The usage data",
@@ -206,6 +213,8 @@ export const countsLast7Days = createRoute({
   tags,
   summary: "Output counts (7 days)",
   description: "Get basic usage data per game, segment, and language for the last 7 days.",
+  // Longer cache time because this is pretty much only used for the header stat on battlefieldstats.ciom and the top game is unlikely to change often
+  middleware: [cache("outputs-counts-last-7-days", 60)],
   responses: {
     200: {
       description: "The usage data",
@@ -232,9 +241,9 @@ export const create = createRoute({
   method: "post",
   path: "/outputs",
   tags: ["Outputs"],
-  middleware: [authentication],
   summary: "Create output",
   description: "create an output.",
+  middleware: [authentication],
   request: {
     body: {
       content: {

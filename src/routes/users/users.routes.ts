@@ -1,5 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { authentication } from "../../middleware/authentication";
+import { cache } from "../../middleware/cache";
 import { UserPayloadSchema } from "../../schemas/payloads/user";
 import { standard200Or201Response, standard500Response } from "../../utils/openApiStandards";
 
@@ -11,6 +12,7 @@ export const count = createRoute({
   tags,
   summary: "Amount of users",
   description: "Get the total amount of users in the database.",
+  middleware: [cache("users-count", 60)],
   responses: {
     200: {
       description: "The amount of users",
@@ -32,6 +34,7 @@ export const top = createRoute({
   tags,
   summary: "Top 20 users",
   description: "Get the top 20 users by stats sent.",
+  middleware: [cache("users-top", 60)],
   responses: {
     200: {
       description: "The top 20 users by stats sent",
@@ -59,7 +62,7 @@ export const usageByUserId = createRoute({
   tags,
   summary: "Usage of a user",
   description: "Get the usage of a user by their Discord ID.",
-  middleware: [authentication],
+  middleware: [authentication, cache("users-usage", 10)],
   request: {
     params: z.object({
       id: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
