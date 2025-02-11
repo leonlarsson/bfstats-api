@@ -6,4 +6,6 @@ export const usersRouter = createRouter()
   .openapi(routes.count, handlers.count)
   .openapi(routes.top, handlers.top)
   .openapi(routes.usageByUserId, handlers.usageByUserId)
-  .openapi(routes.create, handlers.create);
+  .openapi(routes.create, handlers.create)
+  .openapi(routes.getLastOptions, handlers.getLastOptions)
+  .openapi(routes.updateLastOptions, handlers.updateLastOptions);

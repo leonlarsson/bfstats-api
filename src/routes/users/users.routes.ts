@@ -1,3 +1,4 @@
+import { UserLastOptionsSchema } from "@/do/user";
 import { authentication } from "@/middleware/authentication";
 import { cache } from "@/middleware/cache";
 import { UserPayloadSchema } from "@/schemas/payloads/user";
@@ -127,7 +128,66 @@ export const create = createRoute({
   },
 });
 
+export const getLastOptions = createRoute({
+  method: "get",
+  path: "/users/{discordId}/last-options",
+  tags,
+  summary: "Get user's last options",
+  description: "Get the last options of a user by their Discord ID.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: UserLastOptionsSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "The last options of a user",
+      content: {
+        "application/json": {
+          schema: UserLastOptionsSchema,
+        },
+      },
+    },
+    500: standard500Response,
+  },
+});
+
+export const updateLastOptions = createRoute({
+  method: "post",
+  path: "/users/{discordId}/last-options",
+  tags,
+  summary: "Update user's last options",
+  description: "Update the last options of a user by their Discord ID.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: UserLastOptionsSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: standard200Or201Response,
+    500: standard500Response,
+  },
+});
+
 export type CountRoute = typeof count;
 export type TopRoute = typeof top;
 export type UsageByUserIdRoute = typeof usageByUserId;
 export type CreateRoute = typeof create;
+export type GetLastOptionsRoute = typeof getLastOptions;
+export type UpdateLastOptionsRoute = typeof updateLastOptions;

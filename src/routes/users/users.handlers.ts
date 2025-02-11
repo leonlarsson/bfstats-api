@@ -1,8 +1,16 @@
 import { outputs, users } from "@/db/schema";
 import type { AppRouteHandler } from "@/types";
+import { getUserDOStub } from "@/utils/getUserDOStub";
 import { handleAndLogError } from "@/utils/handleAndLogError";
 import { desc, eq, sql } from "drizzle-orm";
-import type { CountRoute, CreateRoute, TopRoute, UsageByUserIdRoute } from "./users.routes";
+import type {
+  CountRoute,
+  CreateRoute,
+  GetLastOptionsRoute,
+  TopRoute,
+  UpdateLastOptionsRoute,
+  UsageByUserIdRoute,
+} from "./users.routes";
 
 export const count: AppRouteHandler<CountRoute> = async (c) => {
   try {
@@ -88,6 +96,31 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
       });
 
     return c.text("ok", 201);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const getLastOptions: AppRouteHandler<GetLastOptionsRoute> = async (c) => {
+  const { discordId } = c.req.valid("param");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    const settings = await stub.getLastOptions();
+    return c.json(settings, 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const updateLastOptions: AppRouteHandler<UpdateLastOptionsRoute> = async (c) => {
+  const { discordId } = c.req.valid("param");
+  const unsafeUserSettings = c.req.valid("json");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    await stub.setLastOptions(unsafeUserSettings);
+    return c.text("ok", 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
   }

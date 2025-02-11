@@ -1,4 +1,5 @@
 import app from "@/app";
+import { UserDurableObject } from "@/do/user";
 import type { CloudflareBindings } from "@/types";
 
 export default {
@@ -6,3 +7,5 @@ export default {
     return app.fetch(request, env, ctx);
   },
 };
+
+export { UserDurableObject };
