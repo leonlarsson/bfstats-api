@@ -133,9 +133,9 @@ export const getRecentSearches: AppRouteHandler<GetRecentSearchesRoute> = async 
 
   try {
     const stub = getUserDOStub(c.env, discordId);
-    const recentUsernames = await stub.getRecentSearches();
+    const recentSearches = await stub.getRecentSearches();
     // Why do I have to cast this? Why does it work in getLastOptions? Both have & Disposable
-    return c.json(recentUsernames as { game: string; username: string; platform: string }[], 200);
+    return c.json(recentSearches as { game: string; username: string; platform: string }[], 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
   }
