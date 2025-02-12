@@ -1,0 +1,45 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  "name": "bfstats",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-04-03",
+
+  "observability": {
+    "enabled": true
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bfstats-new",
+      "database_id": "e68dccd4-7bf7-4860-ba18-17978966ec10",
+      "preview_database_id": "e68dccd4-7bf7-4860-ba18-17978966ec10",
+      "migrations_dir": "./src/db/migrations"
+    }
+  ],
+
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "USER_DO",
+        "class_name": "UserDurableObject"
+      }
+    ]
+  },
+
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["UserDurableObject"]
+    },
+    {
+      "tag": "v2",
+      "deleted_classes": ["UserDurableObject"]
+    },
+    {
+      "tag": "v3",
+      "new_sqlite_classes": ["UserDurableObject"]
+    }
+  ]
+}
