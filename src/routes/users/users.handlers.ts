@@ -6,7 +6,9 @@ import { desc, eq, sql } from "drizzle-orm";
 import type {
   CountRoute,
   CreateRoute,
+  DeleteRecentSearchesRoute,
   GetLastOptionsRoute,
+  GetRecentSearchesRoute,
   TopRoute,
   UpdateLastOptionsRoute,
   UsageByUserIdRoute,
@@ -120,6 +122,31 @@ export const updateLastOptions: AppRouteHandler<UpdateLastOptionsRoute> = async 
   try {
     const stub = getUserDOStub(c.env, discordId);
     await stub.setLastOptions(unsafeUserSettings);
+    return c.text("ok", 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const getRecentSearches: AppRouteHandler<GetRecentSearchesRoute> = async (c) => {
+  const { discordId } = c.req.valid("param");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    const recentUsernames = await stub.getRecentSearches();
+    // Why do I have to cast this? Why does it work in getLastOptions? Both have & Disposable
+    return c.json(recentUsernames as { game: string; username: string; platform: string }[], 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const deleteRecentSearches: AppRouteHandler<DeleteRecentSearchesRoute> = async (c) => {
+  const { discordId } = c.req.valid("param");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    await stub.deleteRecentSearches();
     return c.text("ok", 200);
   } catch (error: any) {
     return handleAndLogError(c, error);

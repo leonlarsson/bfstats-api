@@ -11,7 +11,9 @@ durable_objects.bindings = [
 ]
 
 migrations = [
-  { tag = "v1", new_classes = ["UserDurableObject"] }
+  { tag = "v1", new_classes = ["UserDurableObject"] },
+  { tag = "v2", deleted_classes = ["UserDurableObject"] },
+  { tag = "v3", new_sqlite_classes = ["UserDurableObject"] }
 ]
 
 # r2_buckets = [

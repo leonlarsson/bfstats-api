@@ -185,9 +185,54 @@ export const updateLastOptions = createRoute({
   },
 });
 
+export const getRecentSearches = createRoute({
+  method: "get",
+  path: "/users/{discordId}/recent-searches",
+  tags,
+  summary: "Recent searches",
+  description: "Get the user's recent searches by their Discord ID.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The recent searches",
+      content: {
+        "application/json": {
+          schema: z.array(z.object({ game: z.string(), username: z.string(), platform: z.string() })),
+        },
+      },
+    },
+    500: standard500Response,
+  },
+});
+
+export const deleteRecentSearches = createRoute({
+  method: "delete",
+  path: "/users/{discordId}/recent-searches",
+  tags,
+  summary: "Delete recent searches",
+  description: "Delete the user's recent searches by their Discord ID.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+    }),
+  },
+  responses: {
+    200: standard200Or201Response,
+    500: standard500Response,
+  },
+});
+
 export type CountRoute = typeof count;
 export type TopRoute = typeof top;
 export type UsageByUserIdRoute = typeof usageByUserId;
 export type CreateRoute = typeof create;
 export type GetLastOptionsRoute = typeof getLastOptions;
 export type UpdateLastOptionsRoute = typeof updateLastOptions;
+export type GetRecentSearchesRoute = typeof getRecentSearches;
+export type DeleteRecentSearchesRoute = typeof deleteRecentSearches;

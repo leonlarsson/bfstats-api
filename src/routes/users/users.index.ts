@@ -8,4 +8,6 @@ export const usersRouter = createRouter()
   .openapi(routes.usageByUserId, handlers.usageByUserId)
   .openapi(routes.create, handlers.create)
   .openapi(routes.getLastOptions, handlers.getLastOptions)
-  .openapi(routes.updateLastOptions, handlers.updateLastOptions);
+  .openapi(routes.updateLastOptions, handlers.updateLastOptions)
+  .openapi(routes.getRecentSearches, handlers.getRecentSearches)
+  .openapi(routes.deleteRecentSearches, handlers.deleteRecentSearches);
