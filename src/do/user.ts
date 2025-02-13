@@ -78,7 +78,7 @@ export class UserDurableObject extends DurableObject {
   getRecentUsernamesByGameAndPlatform(game: string, platform: string): string[] {
     const usernames = this.ctx.storage.sql
       .exec<{ username: string }>(
-        "SELECT username FROM searches WHERE game = ? AND WHERE platform = ? ORDER BY created_at DESC LIMIT 5",
+        "SELECT username FROM searches WHERE game = ? AND platform = ? ORDER BY created_at DESC LIMIT 5",
         game,
         platform,
       )
