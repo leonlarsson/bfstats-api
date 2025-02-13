@@ -10,4 +10,5 @@ export const usersRouter = createRouter()
   .openapi(routes.getLastOptions, handlers.getLastOptions)
   .openapi(routes.updateLastOptions, handlers.updateLastOptions)
   .openapi(routes.getRecentSearches, handlers.getRecentSearches)
+  .openapi(routes.getRecentUsernamesByGameAndPlatform, handlers.getRecentUsernamesByGameAndPlatform)
   .openapi(routes.deleteRecentSearches, handlers.deleteRecentSearches);

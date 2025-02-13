@@ -210,6 +210,35 @@ export const getRecentSearches = createRoute({
   },
 });
 
+export const getRecentUsernamesByGameAndPlatform = createRoute({
+  method: "get",
+  path: "/users/{discordId}/recent-usernames-by-game-and-platform",
+  tags,
+  summary: "Recent usernames by game and platform",
+  description: "Get the user's recent usernames from the specified game and platform by their Discord ID.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+    }),
+    query: z.object({
+      game: z.string().openapi({ description: "The game to filter by.", example: "bf2042" }),
+      platform: z.string().openapi({ description: "The platform to filter by.", example: "pc" }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The recent usernames from the specified game and platform",
+      content: {
+        "application/json": {
+          schema: z.array(z.string()),
+        },
+      },
+    },
+    500: standard500Response,
+  },
+});
+
 export const deleteRecentSearches = createRoute({
   method: "delete",
   path: "/users/{discordId}/recent-searches",
@@ -235,4 +264,5 @@ export type CreateRoute = typeof create;
 export type GetLastOptionsRoute = typeof getLastOptions;
 export type UpdateLastOptionsRoute = typeof updateLastOptions;
 export type GetRecentSearchesRoute = typeof getRecentSearches;
+export type GetRecentUsernamesByGameAndPlatformRoute = typeof getRecentUsernamesByGameAndPlatform;
 export type DeleteRecentSearchesRoute = typeof deleteRecentSearches;

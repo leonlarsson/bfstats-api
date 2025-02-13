@@ -9,6 +9,7 @@ import type {
   DeleteRecentSearchesRoute,
   GetLastOptionsRoute,
   GetRecentSearchesRoute,
+  GetRecentUsernamesByGameAndPlatformRoute,
   TopRoute,
   UpdateLastOptionsRoute,
   UsageByUserIdRoute,
@@ -136,6 +137,21 @@ export const getRecentSearches: AppRouteHandler<GetRecentSearchesRoute> = async 
     const recentSearches = await stub.getRecentSearches();
     // Why do I have to cast this? Why does it work in getLastOptions? Both have & Disposable
     return c.json(recentSearches as { game: string; username: string; platform: string }[], 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const getRecentUsernamesByGameAndPlatform: AppRouteHandler<GetRecentUsernamesByGameAndPlatformRoute> = async (
+  c,
+) => {
+  const { discordId } = c.req.valid("param");
+  const { game, platform } = c.req.valid("query");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    const recentUsernames = await stub.getRecentUsernamesByGameAndPlatform(game, platform);
+    return c.json(recentUsernames as string[], 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
   }
