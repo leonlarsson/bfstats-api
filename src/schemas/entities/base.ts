@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const BaseDataSchema = z.object({
   totalGuilds: z.number().int(),
+  totalUserInstalls: z.number().int(),
   totalChannels: z.number().int(),
   totalMembers: z.number().int(),
   totalStatsSent: z.object({

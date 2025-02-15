@@ -23,7 +23,8 @@ export const getData: AppRouteHandler<GetDataRoute> = async (c) => {
 };
 
 export const updateData: AppRouteHandler<UpdateDataRoute> = async (c) => {
-  const { totalGuilds, totalChannels, totalMembers, incrementTotalStatsSent, game, language } = c.req.valid("json");
+  const { totalGuilds, totalUserInstalls, totalChannels, totalMembers, incrementTotalStatsSent, game, language } =
+    c.req.valid("json");
 
   try {
     // Get the stats from DB and edit it accordingly, before re-inserting
@@ -50,8 +51,9 @@ export const updateData: AppRouteHandler<UpdateDataRoute> = async (c) => {
       );
     }
 
-    // Update totalGuilds, totalChannels, totalMembers
+    // Update totalGuilds, totalUserInstalls, totalChannels, totalMembers
     statsObject.totalGuilds = totalGuilds;
+    statsObject.totalUserInstalls = totalUserInstalls;
     statsObject.totalChannels = totalChannels;
     statsObject.totalMembers = totalMembers;
 

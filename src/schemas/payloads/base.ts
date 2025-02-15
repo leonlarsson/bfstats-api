@@ -28,6 +28,7 @@ const languages = [
 
 export const BaseDataPayloadSchema = z.object({
   totalGuilds: z.number().int(),
+  totalUserInstalls: z.number().int(),
   totalChannels: z.number().int(),
   totalMembers: z.number().int(),
   incrementTotalStatsSent: z.boolean().optional(),
