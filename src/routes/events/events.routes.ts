@@ -23,15 +23,15 @@ export const recent = createRoute({
             description: "The 20 most recent events.",
             example: [
               {
-                event: "guildCreate",
+                event: "appGuildInstall",
                 date: "2024-11-14 18:56:02",
               },
               {
-                event: "guildDelete",
+                event: "appUserInstall",
                 date: "2024-11-14 16:23:55",
               },
               {
-                event: "guildCreate",
+                event: "appUninstall",
                 date: "2024-11-14 16:18:25",
               },
             ],
