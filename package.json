@@ -10,6 +10,7 @@
   "dependencies": {
     "@hono/zod-openapi": "^0.16.4",
     "@scalar/hono-api-reference": "^0.5.159",
+    "discord-api-types": "^0.38.18",
     "drizzle-orm": "^0.36.1",
     "hono": "^4.6.9",
     "zod": "^3.23.8"

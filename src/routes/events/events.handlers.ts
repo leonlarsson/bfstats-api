@@ -8,7 +8,7 @@ export const recent: AppRouteHandler<RecentRoute> = async (c) => {
   try {
     const results = await c.get("db").query.events.findMany({
       orderBy: [desc(events.date)],
-      limit: 20,
+      limit: 40,
     });
     return c.json(results, 200);
   } catch (error: any) {
