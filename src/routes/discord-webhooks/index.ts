@@ -1,3 +1,4 @@
+import { waitUntil } from "cloudflare:workers";
 import { events } from "@/db/schema";
 import { AppEvent } from "@/utils/constants";
 import { sendDiscordWebhook, validateSecurityHeaders } from "@/utils/discordApiUtils";
@@ -27,7 +28,7 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
     const { user } = webhook.event.data;
 
     if (installedToUser) {
-      c.executionCtx.waitUntil(
+      waitUntil(
         sendDiscordWebhook(
           c.env.DISCORD_JOINS_WEBHOOK_URL,
           `:person_bald: - Bot was installed to account **${user.username}** (${user.global_name}) (<@${user.id}>)`,
@@ -42,7 +43,7 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
         .values({
           event: installedToUser ? AppEvent.AppUserInstall : AppEvent.AppGuildInstall,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error inserting ApplicationAuthorized event:", error);
     }
   }
@@ -52,7 +53,7 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
   if (webhook.event.type === ApplicationWebhookEventType.ApplicationDeauthorized) {
     const { user } = webhook.event.data;
 
-    c.executionCtx.waitUntil(
+    waitUntil(
       sendDiscordWebhook(
         c.env.DISCORD_JOINS_WEBHOOK_URL,
         `:no_entry_sign: - Bot was deauthorized by user **${user.username}** (${user.global_name}) (<@${user.id}>)`,
@@ -63,10 +64,10 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
       await c.get("db").insert(events).values({
         event: AppEvent.AppUserUninstall,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error inserting ApplicationDeauthorized event:", error);
     }
   }
 
-  return new Response("ok");
+  return new Response("ok", { status: 200 });
 };
