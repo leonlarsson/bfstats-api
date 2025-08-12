@@ -22,8 +22,8 @@ export const dailyEventsNoGaps: AppRouteHandler<DailyEventsNoGapsRoute> = async 
     const { results } = await c.env.DB.prepare(
       `
       WITH RECURSIVE date_range(day) AS (
-        -- Dynamically select the start date from the earliest record in 'events'
-        SELECT strftime('%Y-%m-%d', MIN(date)) FROM events
+        -- Manually set the start date to Jan 1, 2023
+        SELECT '2023-01-01' AS day
         UNION ALL
         -- Generate dates until today
         SELECT strftime('%Y-%m-%d', day, '+1 day') FROM date_range WHERE day < CURRENT_DATE
