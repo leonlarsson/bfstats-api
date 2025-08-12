@@ -3,7 +3,7 @@
 
   "name": "bfstats",
   "main": "src/index.ts",
-  "compatibility_date": "2024-04-03",
+  "compatibility_date": "2025-08-12",
 
   "observability": {
     "enabled": true
