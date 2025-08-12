@@ -1,5 +1,6 @@
 export const AppEvent = {
   AppGuildInstall: "appGuildInstall",
   AppUserInstall: "appUserInstall",
-  AppUninstall: "appUninstall",
+  AppGuildUninstall: "appGuildUninstall",
+  AppUserUninstall: "appUserUninstall",
 } as const;

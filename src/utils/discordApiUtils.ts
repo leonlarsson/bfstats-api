@@ -26,3 +26,13 @@ export const validateSecurityHeaders = async (request: Request) => {
 
   return await crypto.subtle.verify("NODE-ED25519", await PUBLIC_KEY, signature, encoder.encode(timestamp + unknown));
 };
+
+export const sendDiscordWebhook = (url: string, content: string) => {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ content }),
+  });
+};
