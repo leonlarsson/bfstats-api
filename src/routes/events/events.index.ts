@@ -4,4 +4,5 @@ import * as routes from "./events.routes";
 
 export const eventsRouter = createRouter()
   .openapi(routes.recent, handlers.recent)
+  .openapi(routes.dailyEventsNoGaps, handlers.dailyEventsNoGaps)
   .openapi(routes.create, handlers.create);
