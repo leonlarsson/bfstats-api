@@ -1,4 +1,3 @@
-import type { CloudflareBindings } from "@/types";
 import type { Context } from "hono";
 
 export const handleAndLogError = (c: Context<{ Bindings: CloudflareBindings }>, error: Error) => {

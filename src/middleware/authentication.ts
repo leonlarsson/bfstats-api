@@ -1,4 +1,3 @@
-import type { CloudflareBindings } from "@/types";
 import type { Context, Next } from "hono";
 import { bearerAuth } from "hono/bearer-auth";
 

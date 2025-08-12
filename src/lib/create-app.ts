@@ -1,5 +1,4 @@
 import { injectDb } from "@/middleware/injectDb";
-import type { CloudflareBindings } from "@/types";
 import { OpenAPIHono } from "@hono/zod-openapi";
 
 import { cors } from "hono/cors";

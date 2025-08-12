@@ -1,5 +1,4 @@
 import { DurableObject } from "cloudflare:workers";
-import type { CloudflareBindings } from "@/types";
 import { z } from "zod";
 
 export const UserLastOptionsSchema = z.object({
