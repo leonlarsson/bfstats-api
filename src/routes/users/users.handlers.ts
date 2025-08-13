@@ -49,6 +49,7 @@ export const usageByUserId: AppRouteHandler<UsageByUserIdRoute> = async (c) => {
       .select({
         username: users.username,
         lastStatsSent: users.lastStatsSent,
+        bf6Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 6'), 0)`,
         bf2042Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 2042'), 0)`,
         bfvSent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield V'), 0)`,
         bf1Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 1'), 0)`,

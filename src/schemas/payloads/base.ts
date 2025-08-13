@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const games = [
+  "Battlefield 6",
   "Battlefield 2042",
   "Battlefield V",
   "Battlefield 1",

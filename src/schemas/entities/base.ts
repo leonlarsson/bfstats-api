@@ -8,6 +8,7 @@ export const BaseDataSchema = z.object({
   totalStatsSent: z.object({
     total: z.number().int(),
     games: z.object({
+      "Battlefield 6": z.number().int(),
       "Battlefield 2042": z.number().int(),
       "Battlefield V": z.number().int(),
       "Battlefield 1": z.number().int(),
