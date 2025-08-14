@@ -77,5 +77,5 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
     waitUntil(dbAction());
   }
 
-  return new Response("ok", { status: 200 });
+  return new Response(null, { status: 204 });
 };
