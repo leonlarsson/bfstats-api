@@ -36,16 +36,20 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
       );
     }
 
-    try {
-      await c
-        .get("db")
-        .insert(events)
-        .values({
-          event: installedToUser ? AppEvent.AppUserInstall : AppEvent.AppGuildInstall,
-        });
-    } catch (error: unknown) {
-      console.error("Error inserting ApplicationAuthorized event:", error);
-    }
+    const dbAction = async () => {
+      try {
+        await c
+          .get("db")
+          .insert(events)
+          .values({
+            event: installedToUser ? AppEvent.AppUserInstall : AppEvent.AppGuildInstall,
+          });
+      } catch (error: unknown) {
+        console.error("Error inserting ApplicationAuthorized event:", error);
+      }
+    };
+
+    waitUntil(dbAction());
   }
 
   // ApplicationDeauthorized does NOT include when a bot is simply kicked OR de-authed from a guild
@@ -60,13 +64,17 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
       ),
     );
 
-    try {
-      await c.get("db").insert(events).values({
-        event: AppEvent.AppUserUninstall,
-      });
-    } catch (error: unknown) {
-      console.error("Error inserting ApplicationDeauthorized event:", error);
-    }
+    const dbAction = async () => {
+      try {
+        await c.get("db").insert(events).values({
+          event: AppEvent.AppUserUninstall,
+        });
+      } catch (error: unknown) {
+        console.error("Error inserting ApplicationDeauthorized event:", error);
+      }
+    };
+
+    waitUntil(dbAction());
   }
 
   return new Response("ok", { status: 200 });
