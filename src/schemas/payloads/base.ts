@@ -25,6 +25,7 @@ const languages = [
   "Norwegian",
   "Finnish",
   "Arabic",
+  "Chinese",
 ] as const;
 
 export const BaseDataPayloadSchema = z.object({

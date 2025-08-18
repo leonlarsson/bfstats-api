@@ -32,6 +32,7 @@ export const BaseDataSchema = z.object({
       Norwegian: z.number().int(),
       Finnish: z.number().int(),
       Arabic: z.number().int(),
+      Chinese: z.number().int(),
     }),
   }),
   lastUpdated: z.object({
