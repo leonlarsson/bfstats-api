@@ -37,7 +37,7 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
       waitUntil(
         sendDiscordWebhook(
           c.env.DISCORD_JOINS_WEBHOOK_URL,
-          `:person_bald: - Bot was installed to account **${user.username}** (${user.global_name}) (<@${user.id}>)`,
+          `:person_bald: - Bot was installed to account **${user.username}** (${user.global_name ?? user.username}) (<@${user.id}>)`,
         ),
       );
     }
@@ -71,7 +71,7 @@ export const handleDiscordWebhooks = async (c: Context<{ Bindings: CloudflareBin
     waitUntil(
       sendDiscordWebhook(
         c.env.DISCORD_JOINS_WEBHOOK_URL,
-        `:no_entry_sign: - Bot was deauthorized by user **${user.username}** (${user.global_name}) (<@${user.id}>)`,
+        `:no_entry_sign: - Bot was deauthorized by user **${user.username}** (${user.global_name ?? user.username}) (<@${user.id}>)`,
       ),
     );
 
