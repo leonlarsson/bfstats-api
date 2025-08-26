@@ -59,9 +59,13 @@ export const updateData: AppRouteHandler<UpdateDataRoute> = async (c) => {
 
     if (incrementTotalStatsSent === true) {
       // Increment total and specific game and language. Only increment game/language if defined
-      statsObject.totalStatsSent.total++;
-      if (game) statsObject.totalStatsSent.games[game]++;
-      if (language) statsObject.totalStatsSent.languages[language]++;
+      statsObject.totalStatsSent.total = (statsObject.totalStatsSent.total || 0) + 1;
+      if (game) {
+        statsObject.totalStatsSent.games[game] = (statsObject.totalStatsSent.games[game] || 0) + 1;
+      }
+      if (language) {
+        statsObject.totalStatsSent.languages[language] = (statsObject.totalStatsSent.languages[language] || 0) + 1;
+      }
     }
 
     // Add lastUpdated to the object
