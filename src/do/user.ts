@@ -16,12 +16,13 @@ export const UserSettingsSchema = z.object({
 export const UserLinkPayloadSchema = z.object({
   platform: z.string().min(1).max(100),
   username: z.string().min(1).max(100),
-  // A human-readable name for this link, when username alone isn't one (e.g. BF6's numeric TRN ID)
-  displayUsername: z.string().min(1).max(100).optional(),
+  // Always used as the username we display in the bot. TRN BF6 identifier is a number, so in this case, the displayUsername is the human-readable username.
+  // The bot will otherwise set displayUsername to the same value as username
+  displayUsername: z.string().min(1).max(100),
 });
 
 export const UserLinkSchema = UserLinkPayloadSchema.extend({
-  linkedAt: z.string().optional(),
+  linkedAt: z.string(),
 });
 
 // All of a user's linked accounts, keyed by game command name (e.g. "bf1")
@@ -83,11 +84,11 @@ export class UserDurableObject extends DurableObject {
   }
 
   async getLinks(): Promise<UserLinks> {
-    const links = await this.ctx.storage.get("links");
+    const links = await this.ctx.storage.get<UserLinks>("links");
     return UserLinksSchema.parse(links || {});
   }
 
-  async setLink(game: string, unsafeLink: UserLink): Promise<void> {
+  async setLink(game: string, unsafeLink: Omit<UserLink, "linkedAt">): Promise<void> {
     const links = await this.getLinks();
     links[game] = UserLinkSchema.parse({ ...unsafeLink, linkedAt: new Date().toISOString() });
     await this.ctx.storage.put<UserLinks>("links", links);
