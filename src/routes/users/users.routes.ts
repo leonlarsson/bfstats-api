@@ -1,4 +1,4 @@
-import { UserLastOptionsSchema } from "@/do/user";
+import { UserLastOptionsSchema, UserLinkPayloadSchema, UserLinksSchema } from "@/do/user";
 import { authentication } from "@/middleware/authentication";
 import { cache } from "@/middleware/cache";
 import { UserPayloadSchema } from "@/schemas/payloads/user";
@@ -185,6 +185,76 @@ export const updateLastOptions = createRoute({
   },
 });
 
+export const getLinks = createRoute({
+  method: "get",
+  path: "/users/{discordId}/links",
+  tags,
+  summary: "Get user's linked accounts",
+  description: "Get the linked Battlefield accounts of a user by their Discord ID, keyed by game.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The linked accounts, keyed by game",
+      content: {
+        "application/json": {
+          schema: UserLinksSchema,
+        },
+      },
+    },
+    500: standard500Response,
+  },
+});
+
+export const putLink = createRoute({
+  method: "put",
+  path: "/users/{discordId}/links/{game}",
+  tags,
+  summary: "Set user's linked account",
+  description: "Set the linked Battlefield account for a game for a user by their Discord ID.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+      game: z.string().openapi({ description: "The game to link.", example: "bf1" }),
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: UserLinkPayloadSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: standard200Or201Response,
+    500: standard500Response,
+  },
+});
+
+export const deleteLink = createRoute({
+  method: "delete",
+  path: "/users/{discordId}/links/{game}",
+  tags,
+  summary: "Delete user's linked account",
+  description: "Delete the linked Battlefield account for a game for a user by their Discord ID.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
+      game: z.string().openapi({ description: "The game to unlink.", example: "bf1" }),
+    }),
+  },
+  responses: {
+    200: standard200Or201Response,
+    500: standard500Response,
+  },
+});
+
 export const getRecentSearches = createRoute({
   method: "get",
   path: "/users/{discordId}/recent-searches",
@@ -263,6 +333,9 @@ export type UsageByUserIdRoute = typeof usageByUserId;
 export type CreateRoute = typeof create;
 export type GetLastOptionsRoute = typeof getLastOptions;
 export type UpdateLastOptionsRoute = typeof updateLastOptions;
+export type GetLinksRoute = typeof getLinks;
+export type PutLinkRoute = typeof putLink;
+export type DeleteLinkRoute = typeof deleteLink;
 export type GetRecentSearchesRoute = typeof getRecentSearches;
 export type GetRecentUsernamesByGameAndPlatformRoute = typeof getRecentUsernamesByGameAndPlatform;
 export type DeleteRecentSearchesRoute = typeof deleteRecentSearches;
