@@ -1,6 +1,7 @@
-import { outputs, users } from "@/db/schema";
+import { events, outputs, users } from "@/db/schema";
 import type { UserLinks } from "@/do/user";
 import type { AppRouteHandler } from "@/types";
+import { AppEvent } from "@/utils/constants";
 import { getUserDOStub } from "@/utils/getUserDOStub";
 import { handleAndLogError } from "@/utils/handleAndLogError";
 import { desc, eq, sql } from "drizzle-orm";
@@ -153,6 +154,7 @@ export const putLink: AppRouteHandler<PutLinkRoute> = async (c) => {
   try {
     const stub = getUserDOStub(c.env, discordId);
     await stub.setLink(game, unsafeLink);
+    await c.get("db").insert(events).values({ event: AppEvent.BfAccountLink });
     return c.text("ok", 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
@@ -165,6 +167,7 @@ export const deleteLink: AppRouteHandler<DeleteLinkRoute> = async (c) => {
   try {
     const stub = getUserDOStub(c.env, discordId);
     await stub.deleteLink(game);
+    await c.get("db").insert(events).values({ event: AppEvent.BfAccountUnlink });
     return c.text("ok", 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
