@@ -12,8 +12,25 @@ export const UserSettingsSchema = z.object({
   preferredUsername: z.string().optional(),
 });
 
+// The payload sent by the bot when linking an account. linkedAt is set server-side
+export const UserLinkPayloadSchema = z.object({
+  platform: z.string().min(1).max(100),
+  username: z.string().min(1).max(100),
+  // A human-readable name for this link, when username alone isn't one (e.g. BF6's numeric TRN ID)
+  displayUsername: z.string().min(1).max(100).optional(),
+});
+
+export const UserLinkSchema = UserLinkPayloadSchema.extend({
+  linkedAt: z.string().optional(),
+});
+
+// All of a user's linked accounts, keyed by game command name (e.g. "bf1")
+export const UserLinksSchema = z.record(z.string(), UserLinkSchema);
+
 export type UserLastOptions = z.infer<typeof UserLastOptionsSchema>;
 export type UserSettings = z.infer<typeof UserSettingsSchema>;
+export type UserLink = z.infer<typeof UserLinkSchema>;
+export type UserLinks = z.infer<typeof UserLinksSchema>;
 
 export class UserDurableObject extends DurableObject {
   sql: SqlStorage;
@@ -63,6 +80,23 @@ export class UserDurableObject extends DurableObject {
     const oldSettings = await this.getSettings();
     const newSettings = UserSettingsSchema.parse({ ...oldSettings, ...unsafeUserSettings });
     await this.ctx.storage.put<UserSettings>("settings", newSettings);
+  }
+
+  async getLinks(): Promise<UserLinks> {
+    const links = await this.ctx.storage.get("links");
+    return UserLinksSchema.parse(links || {});
+  }
+
+  async setLink(game: string, unsafeLink: UserLink): Promise<void> {
+    const links = await this.getLinks();
+    links[game] = UserLinkSchema.parse({ ...unsafeLink, linkedAt: new Date().toISOString() });
+    await this.ctx.storage.put<UserLinks>("links", links);
+  }
+
+  async deleteLink(game: string): Promise<void> {
+    const links = await this.getLinks();
+    delete links[game];
+    await this.ctx.storage.put<UserLinks>("links", links);
   }
 
   getRecentSearches(): { game: string; username: string; platform: string }[] {

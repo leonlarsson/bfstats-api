@@ -1,4 +1,5 @@
 import { outputs, users } from "@/db/schema";
+import type { UserLinks } from "@/do/user";
 import type { AppRouteHandler } from "@/types";
 import { getUserDOStub } from "@/utils/getUserDOStub";
 import { handleAndLogError } from "@/utils/handleAndLogError";
@@ -6,10 +7,13 @@ import { desc, eq, sql } from "drizzle-orm";
 import type {
   CountRoute,
   CreateRoute,
+  DeleteLinkRoute,
   DeleteRecentSearchesRoute,
   GetLastOptionsRoute,
+  GetLinksRoute,
   GetRecentSearchesRoute,
   GetRecentUsernamesByGameAndPlatformRoute,
+  PutLinkRoute,
   TopRoute,
   UpdateLastOptionsRoute,
   UsageByUserIdRoute,
@@ -124,6 +128,43 @@ export const updateLastOptions: AppRouteHandler<UpdateLastOptionsRoute> = async 
   try {
     const stub = getUserDOStub(c.env, discordId);
     await stub.setLastOptions(unsafeUserSettings);
+    return c.text("ok", 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const getLinks: AppRouteHandler<GetLinksRoute> = async (c) => {
+  const { discordId } = c.req.valid("param");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    const links = await stub.getLinks();
+    return c.json(links as UserLinks, 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const putLink: AppRouteHandler<PutLinkRoute> = async (c) => {
+  const { discordId, game } = c.req.valid("param");
+  const unsafeLink = c.req.valid("json");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    await stub.setLink(game, unsafeLink);
+    return c.text("ok", 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const deleteLink: AppRouteHandler<DeleteLinkRoute> = async (c) => {
+  const { discordId, game } = c.req.valid("param");
+
+  try {
+    const stub = getUserDOStub(c.env, discordId);
+    await stub.deleteLink(game);
     return c.text("ok", 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
