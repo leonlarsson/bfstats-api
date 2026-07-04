@@ -16,6 +16,8 @@ export const UserSettingsSchema = z.object({
 export const UserLinkPayloadSchema = z.object({
   platform: z.string().min(1).max(100),
   username: z.string().min(1).max(100),
+  // A human-readable name for this link, when username alone isn't one (e.g. BF6's numeric TRN ID)
+  displayUsername: z.string().min(1).max(100).optional(),
 });
 
 export const UserLinkSchema = UserLinkPayloadSchema.extend({
