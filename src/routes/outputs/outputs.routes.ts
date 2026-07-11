@@ -65,6 +65,7 @@ export const recent = createRoute({
             language: true,
             date: true,
             identifier: true,
+            format: true,
           })
             .array()
             .openapi({
@@ -76,6 +77,7 @@ export const recent = createRoute({
                   language: "English",
                   date: "2024-11-14 19:04:40",
                   identifier: "LBEk8An7EFqwRavBf1",
+                  format: "image_art",
                 },
                 {
                   game: "Battlefield 2042",
@@ -83,6 +85,7 @@ export const recent = createRoute({
                   language: "English",
                   date: "2024-11-14 18:59:04",
                   identifier: "CBy6RNaOjRd80v7ltA",
+                  format: "text",
                 },
               ],
             }),

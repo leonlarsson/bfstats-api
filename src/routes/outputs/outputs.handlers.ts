@@ -48,6 +48,7 @@ export const recent: AppRouteHandler<RecentRoute> = async (c) => {
         language: true,
         date: true,
         identifier: true,
+        format: true,
       },
       orderBy: desc(outputs.date),
       limit: 20,
