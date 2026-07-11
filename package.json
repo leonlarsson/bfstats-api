@@ -6,7 +6,10 @@
     "types": "wrangler types --env-interface CloudflareBindings",
     "biome": "npx @biomejs/biome check --write .",
     "db:sync": "drizzle-kit push",
-    "db:pull": "drizzle-kit pull"
+    "db:pull": "drizzle-kit pull",
+    "db:migration:new": "wrangler d1 migrations create bfstats-new",
+    "db:migration:apply": "wrangler d1 migrations apply bfstats-new",
+    "db:migration:apply:remote": "wrangler d1 migrations apply bfstats-new --remote"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.16.4",

@@ -1,0 +1,2 @@
+-- Migration number: 0006 	 2026-07-11T12:05:22.047Z
+ALTER TABLE outputs ADD COLUMN is_my_stats INTEGER NOT NULL DEFAULT 0;
