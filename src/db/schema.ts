@@ -16,6 +16,8 @@ export const outputs = sqliteTable(
     imageUrl: text(),
     identifier: text(),
     isMyStats: integer({ mode: "boolean" }).notNull().default(false),
+    platform: text(),
+    format: text().notNull(),
   },
   (table) => {
     return {

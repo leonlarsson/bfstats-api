@@ -191,6 +191,8 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
     imageURL,
     identifier,
     isMyStats,
+    platform,
+    format,
   } = c.req.valid("json");
 
   try {
@@ -206,6 +208,8 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
       imageUrl: imageURL,
       identifier,
       isMyStats,
+      platform,
+      format,
     });
 
     return c.text("ok", 201);

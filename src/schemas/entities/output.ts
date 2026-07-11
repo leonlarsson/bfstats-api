@@ -18,4 +18,9 @@ export const OutputSchema = z.object({
   is_my_stats: z
     .boolean()
     .openapi({ description: "Whether the output was generated via a /game mystats command.", example: true }),
+  platform: z
+    .string()
+    .nullable()
+    .openapi({ description: "The platform the stats were requested on.", example: "origin" }),
+  format: z.string().openapi({ description: "The format of the output.", example: "image_art" }),
 });
