@@ -24,6 +24,7 @@ export const getByIdentifier: AppRouteHandler<GetByIdentifierRoute> = async (c) 
         language: true,
         date: true,
         identifier: true,
+        format: true,
       },
       where: or(eq(outputs.identifier, identifier), like(outputs.identifier, `%${identifier}%`)),
     });

@@ -30,6 +30,7 @@ export const getByIdentifier = createRoute({
             language: true,
             date: true,
             identifier: true,
+            format: true,
           }),
         },
       },
