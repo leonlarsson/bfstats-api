@@ -15,4 +15,7 @@ export const OutputSchema = z.object({
     .string()
     .nullable()
     .openapi({ description: "The full identifier of the output.", example: "YImDLDbrfXO1KgTULW" }),
+  is_my_stats: z
+    .boolean()
+    .openapi({ description: "Whether the output was generated via a /game mystats command.", example: true }),
 });

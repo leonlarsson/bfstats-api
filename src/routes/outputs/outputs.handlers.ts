@@ -179,8 +179,19 @@ ORDER BY category ASC, sent DESC;
 };
 
 export const create: AppRouteHandler<CreateRoute> = async (c) => {
-  const { userId, username, guildName, guildId, game, segment, language, messageURL, imageURL, identifier } =
-    c.req.valid("json");
+  const {
+    userId,
+    username,
+    guildName,
+    guildId,
+    game,
+    segment,
+    language,
+    messageURL,
+    imageURL,
+    identifier,
+    isMyStats,
+  } = c.req.valid("json");
 
   try {
     await c.get("db").insert(outputs).values({
@@ -194,6 +205,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
       messageUrl: messageURL,
       imageUrl: imageURL,
       identifier,
+      isMyStats,
     });
 
     return c.text("ok", 201);
