@@ -5,4 +5,5 @@ export const AppEvent = {
   AppUserUninstall: "appUserUninstall",
   BfAccountLink: "bfAccountLink",
   BfAccountUnlink: "bfAccountUnlink",
+  ImageGenerated: "imageGenerated",
 } as const;
