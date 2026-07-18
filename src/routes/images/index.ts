@@ -55,9 +55,9 @@ export const handleImageProxy = async (c: Context<{ Bindings: CloudflareBindings
     waitUntil(
       (async () => {
         try {
-          await c.get("db").insert(events).values({ event: AppEvent.ImageGenerated });
+          await c.get("db").insert(events).values({ event: AppEvent.ApiImageGenerated });
         } catch (error) {
-          console.error("[image-proxy] failed to insert ImageGenerated event:", error);
+          console.error("[image-proxy] failed to insert ApiImageGenerated event:", error);
         }
       })(),
     );
