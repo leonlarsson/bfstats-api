@@ -1,17 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { z } from "zod";
 
-export const UserLastOptionsSchema = z.object({
-  lastGame: z.string().optional(),
-  lastSegment: z.string().optional(),
-  lastPlatform: z.string().optional(),
-  lastUsername: z.string().optional(),
-});
-
-export const UserSettingsSchema = z.object({
-  preferredUsername: z.string().optional(),
-});
-
 // The payload sent by the bot when linking an account. linkedAt is set server-side
 export const UserLinkPayloadSchema = z.object({
   platform: z.string().min(1).max(100),
@@ -28,8 +17,6 @@ export const UserLinkSchema = UserLinkPayloadSchema.extend({
 // All of a user's linked accounts, keyed by game command name (e.g. "bf1")
 export const UserLinksSchema = z.record(z.string(), UserLinkSchema);
 
-export type UserLastOptions = z.infer<typeof UserLastOptionsSchema>;
-export type UserSettings = z.infer<typeof UserSettingsSchema>;
 export type UserLink = z.infer<typeof UserLinkSchema>;
 export type UserLinks = z.infer<typeof UserLinksSchema>;
 
@@ -56,33 +43,6 @@ export class UserDurableObject extends DurableObject {
         CREATE INDEX IF NOT EXISTS idx_created_at ON searches (created_at);
     `);
   }
-  async getLastOptions(): Promise<UserLastOptions> {
-    const options = await this.ctx.storage.get("last-options");
-    return UserLastOptionsSchema.parse(options || {});
-  }
-
-  async setLastOptions(unsafeUserLastOptions: UserLastOptions): Promise<void> {
-    const oldLastOptions = await this.getLastOptions();
-    const newOptions = UserLastOptionsSchema.parse({ ...oldLastOptions, ...unsafeUserLastOptions });
-
-    // Save the new options
-    await this.ctx.storage.put<UserLastOptions>("last-options", newOptions);
-
-    // Add the username (and platform) to the recent list
-    this.addSearch(newOptions.lastGame || "", newOptions.lastUsername || "", newOptions.lastPlatform || "");
-  }
-
-  async getSettings(): Promise<UserSettings> {
-    const settings = await this.ctx.storage.get("settings");
-    return UserSettingsSchema.parse(settings || {});
-  }
-
-  async setSettings(unsafeUserSettings: UserSettings): Promise<void> {
-    const oldSettings = await this.getSettings();
-    const newSettings = UserSettingsSchema.parse({ ...oldSettings, ...unsafeUserSettings });
-    await this.ctx.storage.put<UserSettings>("settings", newSettings);
-  }
-
   async getLinks(): Promise<UserLinks> {
     const links = await this.ctx.storage.get<UserLinks>("links");
     return UserLinksSchema.parse(links || {});
@@ -98,15 +58,6 @@ export class UserDurableObject extends DurableObject {
     const links = await this.getLinks();
     delete links[game];
     await this.ctx.storage.put<UserLinks>("links", links);
-  }
-
-  getRecentSearches(): { game: string; username: string; platform: string }[] {
-    const searches = this.ctx.storage.sql
-      .exec<{ game: string; username: string; platform: string }>(
-        "SELECT game, username, platform FROM searches ORDER BY created_at DESC LIMIT 5",
-      )
-      .toArray();
-    return searches;
   }
 
   getRecentUsernamesByGameAndPlatform(game: string, platform: string): string[] {
@@ -127,9 +78,5 @@ export class UserDurableObject extends DurableObject {
       username,
       platform,
     );
-  }
-
-  deleteRecentSearches(): void {
-    this.ctx.storage.sql.exec("DELETE FROM searches");
   }
 }

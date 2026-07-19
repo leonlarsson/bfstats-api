@@ -1,7 +1,7 @@
-import { UserLastOptionsSchema, UserLinkPayloadSchema, UserLinksSchema } from "@/do/user";
+import { UserLinkPayloadSchema, UserLinksSchema } from "@/do/user";
 import { authentication } from "@/middleware/authentication";
 import { cache } from "@/middleware/cache";
-import { UserPayloadSchema } from "@/schemas/payloads/user";
+import { UserPayloadSchema, UserSearchPayloadSchema } from "@/schemas/payloads/user";
 import { standard200Or201Response, standard500Response } from "@/utils/openApiStandards";
 import { createRoute, z } from "@hono/zod-openapi";
 
@@ -132,44 +132,12 @@ export const create = createRoute({
   },
 });
 
-export const getLastOptions = createRoute({
-  method: "get",
-  path: "/users/{discordId}/last-options",
-  tags,
-  summary: "Get user's last options",
-  description: "Get the last options of a user by their Discord ID.",
-  middleware: [authentication],
-  request: {
-    params: z.object({
-      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
-    }),
-    body: {
-      content: {
-        "application/json": {
-          schema: UserLastOptionsSchema,
-        },
-      },
-    },
-  },
-  responses: {
-    200: {
-      description: "The last options of a user",
-      content: {
-        "application/json": {
-          schema: UserLastOptionsSchema,
-        },
-      },
-    },
-    500: standard500Response,
-  },
-});
-
-export const updateLastOptions = createRoute({
+export const addSearch = createRoute({
   method: "post",
-  path: "/users/{discordId}/last-options",
+  path: "/users/{discordId}/searches",
   tags,
-  summary: "Update user's last options",
-  description: "Update the last options of a user by their Discord ID.",
+  summary: "Record a search",
+  description: "Record a search for a user by their Discord ID, used for autocomplete of recent usernames.",
   middleware: [authentication],
   request: {
     params: z.object({
@@ -178,13 +146,15 @@ export const updateLastOptions = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: UserLastOptionsSchema,
+          schema: UserSearchPayloadSchema,
         },
       },
     },
   },
   responses: {
-    200: standard200Or201Response,
+    201: {
+      description: "The search was recorded",
+    },
     500: standard500Response,
   },
 });
@@ -259,31 +229,6 @@ export const deleteLink = createRoute({
   },
 });
 
-export const getRecentSearches = createRoute({
-  method: "get",
-  path: "/users/{discordId}/recent-searches",
-  tags,
-  summary: "Recent searches",
-  description: "Get the user's recent searches by their Discord ID.",
-  middleware: [authentication],
-  request: {
-    params: z.object({
-      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
-    }),
-  },
-  responses: {
-    200: {
-      description: "The recent searches",
-      content: {
-        "application/json": {
-          schema: z.array(z.object({ game: z.string(), username: z.string(), platform: z.string() })),
-        },
-      },
-    },
-    500: standard500Response,
-  },
-});
-
 export const getRecentUsernamesByGameAndPlatform = createRoute({
   method: "get",
   path: "/users/{discordId}/recent-usernames-by-game-and-platform",
@@ -313,33 +258,12 @@ export const getRecentUsernamesByGameAndPlatform = createRoute({
   },
 });
 
-export const deleteRecentSearches = createRoute({
-  method: "delete",
-  path: "/users/{discordId}/recent-searches",
-  tags,
-  summary: "Delete recent searches",
-  description: "Delete the user's recent searches by their Discord ID.",
-  middleware: [authentication],
-  request: {
-    params: z.object({
-      discordId: z.string().openapi({ description: "The Discord ID of the user.", example: "99182302885588992" }),
-    }),
-  },
-  responses: {
-    200: standard200Or201Response,
-    500: standard500Response,
-  },
-});
-
 export type CountRoute = typeof count;
 export type TopRoute = typeof top;
 export type UsageByUserIdRoute = typeof usageByUserId;
 export type CreateRoute = typeof create;
-export type GetLastOptionsRoute = typeof getLastOptions;
-export type UpdateLastOptionsRoute = typeof updateLastOptions;
+export type AddSearchRoute = typeof addSearch;
 export type GetLinksRoute = typeof getLinks;
 export type PutLinkRoute = typeof putLink;
 export type DeleteLinkRoute = typeof deleteLink;
-export type GetRecentSearchesRoute = typeof getRecentSearches;
 export type GetRecentUsernamesByGameAndPlatformRoute = typeof getRecentUsernamesByGameAndPlatform;
-export type DeleteRecentSearchesRoute = typeof deleteRecentSearches;

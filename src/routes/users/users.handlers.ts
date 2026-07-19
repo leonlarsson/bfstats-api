@@ -6,17 +6,14 @@ import { getUserDOStub } from "@/utils/getUserDOStub";
 import { handleAndLogError } from "@/utils/handleAndLogError";
 import { desc, eq, sql } from "drizzle-orm";
 import type {
+  AddSearchRoute,
   CountRoute,
   CreateRoute,
   DeleteLinkRoute,
-  DeleteRecentSearchesRoute,
-  GetLastOptionsRoute,
   GetLinksRoute,
-  GetRecentSearchesRoute,
   GetRecentUsernamesByGameAndPlatformRoute,
   PutLinkRoute,
   TopRoute,
-  UpdateLastOptionsRoute,
   UsageByUserIdRoute,
 } from "./users.routes";
 
@@ -113,26 +110,14 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
   }
 };
 
-export const getLastOptions: AppRouteHandler<GetLastOptionsRoute> = async (c) => {
+export const addSearch: AppRouteHandler<AddSearchRoute> = async (c) => {
   const { discordId } = c.req.valid("param");
+  const { game, username, platform } = c.req.valid("json");
 
   try {
     const stub = getUserDOStub(c.env, discordId);
-    const settings = await stub.getLastOptions();
-    return c.json(settings, 200);
-  } catch (error: any) {
-    return handleAndLogError(c, error);
-  }
-};
-
-export const updateLastOptions: AppRouteHandler<UpdateLastOptionsRoute> = async (c) => {
-  const { discordId } = c.req.valid("param");
-  const unsafeUserSettings = c.req.valid("json");
-
-  try {
-    const stub = getUserDOStub(c.env, discordId);
-    await stub.setLastOptions(unsafeUserSettings);
-    return c.text("ok", 200);
+    stub.addSearch(game, username, platform);
+    return c.body(null, 201);
   } catch (error: any) {
     return handleAndLogError(c, error);
   }
@@ -177,19 +162,6 @@ export const deleteLink: AppRouteHandler<DeleteLinkRoute> = async (c) => {
   }
 };
 
-export const getRecentSearches: AppRouteHandler<GetRecentSearchesRoute> = async (c) => {
-  const { discordId } = c.req.valid("param");
-
-  try {
-    const stub = getUserDOStub(c.env, discordId);
-    const recentSearches = await stub.getRecentSearches();
-    // Why do I have to cast this? Why does it work in getLastOptions? Both have & Disposable
-    return c.json(recentSearches as { game: string; username: string; platform: string }[], 200);
-  } catch (error: any) {
-    return handleAndLogError(c, error);
-  }
-};
-
 export const getRecentUsernamesByGameAndPlatform: AppRouteHandler<GetRecentUsernamesByGameAndPlatformRoute> = async (
   c,
 ) => {
@@ -200,18 +172,6 @@ export const getRecentUsernamesByGameAndPlatform: AppRouteHandler<GetRecentUsern
     const stub = getUserDOStub(c.env, discordId);
     const recentUsernames = await stub.getRecentUsernamesByGameAndPlatform(game, platform);
     return c.json(recentUsernames as string[], 200);
-  } catch (error: any) {
-    return handleAndLogError(c, error);
-  }
-};
-
-export const deleteRecentSearches: AppRouteHandler<DeleteRecentSearchesRoute> = async (c) => {
-  const { discordId } = c.req.valid("param");
-
-  try {
-    const stub = getUserDOStub(c.env, discordId);
-    await stub.deleteRecentSearches();
-    return c.text("ok", 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
   }
