@@ -116,7 +116,7 @@ export const addSearch: AppRouteHandler<AddSearchRoute> = async (c) => {
 
   try {
     const stub = getUserDOStub(c.env, discordId);
-    stub.addSearch(game, username, platform);
+    await stub.addSearch(game, username, platform);
     return c.body(null, 201);
   } catch (error: any) {
     return handleAndLogError(c, error);
