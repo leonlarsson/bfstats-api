@@ -74,23 +74,27 @@ export const usageByUserId = createRoute({
       description: "The usage of a user",
       content: {
         "application/json": {
-          schema: z
-            .object({
-              username: z.string().openapi({ description: "The user's username.", example: "mozzy" }),
-              lastStatsSent: z
-                .string()
-                .openapi({ description: "The last time stats were sent.", example: "2024-11-13 20:33:15" }),
-              bf2042Sent: z.number(),
-              bfvSent: z.number(),
-              bf1Sent: z.number(),
-              bfhSent: z.number(),
-              bf4Sent: z.number(),
-              bf3Sent: z.number(),
-              bfbc2Sent: z.number(),
-              bf2Sent: z.number(),
-              outputCount: z.number(),
-            })
-            .openapi({ description: "The usage stats of a user." }),
+          schema: z.object({
+            usage: z
+              .object({
+                username: z.string().openapi({ description: "The user's username.", example: "mozzy" }),
+                lastStatsSent: z
+                  .string()
+                  .openapi({ description: "The last time stats were sent.", example: "2024-11-13 20:33:15" }),
+                bf6Sent: z.number(),
+                bf2042Sent: z.number(),
+                bfvSent: z.number(),
+                bf1Sent: z.number(),
+                bfhSent: z.number(),
+                bf4Sent: z.number(),
+                bf3Sent: z.number(),
+                bfbc2Sent: z.number(),
+                bf2Sent: z.number(),
+                outputCount: z.number(),
+              })
+              .openapi({ description: "The usage stats of a user." }),
+            userLinks: UserLinksSchema.openapi({ description: "The linked Battlefield accounts of the user." }),
+          }),
         },
       },
     },

@@ -49,33 +49,36 @@ export const usageByUserId: AppRouteHandler<UsageByUserIdRoute> = async (c) => {
   const { id } = c.req.valid("param");
 
   try {
-    const results = await c
-      .get("db")
-      .select({
-        username: users.username,
-        lastStatsSent: users.lastStatsSent,
-        bf6Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 6'), 0)`,
-        bf2042Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 2042'), 0)`,
-        bfvSent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield V'), 0)`,
-        bf1Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 1'), 0)`,
-        bfhSent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield Hardline'), 0)`,
-        bf4Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 4'), 0)`,
-        bf3Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 3'), 0)`,
-        bfbc2Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield Bad Company 2'), 0)`,
-        bf2Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 2'), 0)`,
-        outputCount: sql<number>`COUNT(outputs.user_id)`,
-      })
-      .from(users)
-      .leftJoin(outputs, eq(users.userId, outputs.userId))
-      .where(eq(users.userId, id));
+    const stub = getUserDOStub(c.env, id);
 
-    const foundUser = !!results[0].username;
+    const [[usageResults], linkResults] = await Promise.all([
+      c
+        .get("db")
+        .select({
+          username: users.username,
+          lastStatsSent: users.lastStatsSent,
+          bf6Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 6'), 0)`,
+          bf2042Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 2042'), 0)`,
+          bfvSent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield V'), 0)`,
+          bf1Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 1'), 0)`,
+          bfhSent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield Hardline'), 0)`,
+          bf4Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 4'), 0)`,
+          bf3Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 3'), 0)`,
+          bfbc2Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield Bad Company 2'), 0)`,
+          bf2Sent: sql<number>`COALESCE(SUM(outputs.game = 'Battlefield 2'), 0)`,
+          outputCount: sql<number>`COUNT(outputs.user_id)`,
+        })
+        .from(users)
+        .leftJoin(outputs, eq(users.userId, outputs.userId))
+        .where(eq(users.userId, id)),
+      stub.getLinks(),
+    ]);
 
-    if (!foundUser) {
+    if (!usageResults) {
       return c.json(null, 404);
     }
 
-    return c.json(results[0], 200);
+    return c.json({ usage: usageResults, userLinks: linkResults }, 200);
   } catch (error: any) {
     return handleAndLogError(c, error);
   }
