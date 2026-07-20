@@ -18,6 +18,7 @@ export const outputs = sqliteTable(
     isMyStats: integer({ mode: "boolean" }).notNull().default(false),
     platform: text(),
     format: text().notNull(),
+    paginationPage: integer(),
   },
   (table) => {
     return {

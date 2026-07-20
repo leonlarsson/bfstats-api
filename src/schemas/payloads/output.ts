@@ -17,6 +17,7 @@ export const OutputPayloadSchema = z
     isMyStats: z.boolean().optional().default(false),
     platform: z.string().nullable(),
     format: z.enum(formats),
+    paginationPage: z.number().positive().nullable().optional(),
   })
   .openapi({
     description: "The output data",

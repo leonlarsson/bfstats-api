@@ -23,4 +23,10 @@ export const OutputSchema = z.object({
     .nullable()
     .openapi({ description: "The platform the stats were requested on.", example: "origin" }),
   format: z.string().openapi({ description: "The format of the output.", example: "image_art" }),
+  pagination_page: z
+    .number()
+    .positive()
+    .nullable()
+    .optional()
+    .openapi({ description: "The page that was requested. For array-based stats." }),
 });
