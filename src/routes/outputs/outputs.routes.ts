@@ -31,6 +31,7 @@ export const getByIdentifier = createRoute({
             date: true,
             identifier: true,
             format: true,
+            paginationPage: true,
           }),
         },
       },
@@ -66,6 +67,7 @@ export const recent = createRoute({
             date: true,
             identifier: true,
             format: true,
+            paginationPage: true,
           })
             .array()
             .openapi({
