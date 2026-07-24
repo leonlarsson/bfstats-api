@@ -19,6 +19,7 @@ export const outputs = sqliteTable(
     platform: text(),
     format: text().notNull(),
     paginationPage: integer(),
+    sortKey: text(),
   },
   (table) => {
     return {

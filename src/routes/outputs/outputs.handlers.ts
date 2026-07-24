@@ -198,6 +198,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
     platform,
     format,
     paginationPage,
+    sortKey,
   } = c.req.valid("json");
 
   try {
@@ -216,6 +217,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
       platform,
       format,
       paginationPage,
+      sortKey,
     });
 
     return c.text("ok", 201);
