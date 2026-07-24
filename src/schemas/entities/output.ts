@@ -32,5 +32,6 @@ export const OutputSchema = z.object({
   sortKey: z
     .string()
     .nullable()
+    .optional()
     .openapi({ description: "The sort key used. For array-based stats.", example: "kills" }),
 });

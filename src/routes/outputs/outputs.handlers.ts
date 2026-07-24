@@ -26,6 +26,7 @@ export const getByIdentifier: AppRouteHandler<GetByIdentifierRoute> = async (c) 
         identifier: true,
         format: true,
         paginationPage: true,
+        sortKey: true
       },
       where: or(eq(outputs.identifier, identifier), like(outputs.identifier, `%${identifier}%`)),
     });
@@ -51,6 +52,7 @@ export const recent: AppRouteHandler<RecentRoute> = async (c) => {
         identifier: true,
         format: true,
         paginationPage: true,
+        sortKey: true
       },
       orderBy: desc(outputs.date),
       limit: 20,
