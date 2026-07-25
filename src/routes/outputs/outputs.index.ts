@@ -4,6 +4,7 @@ import * as routes from "./outputs.routes";
 
 export const outputsRouter = createRouter()
   .openapi(routes.getByIdentifier, handlers.getByIdentifier)
+  .openapi(routes.getByChainIdentifier, handlers.getByChainIdentifier)
   .openapi(routes.recent, handlers.recent)
   .openapi(routes.daily, handlers.daily)
   .openapi(routes.dailyGames, handlers.dailyGames)

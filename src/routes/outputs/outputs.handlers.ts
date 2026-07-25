@@ -1,7 +1,7 @@
 import { outputs } from "@/db/schema";
 import type { AppRouteHandler } from "@/types";
 import { handleAndLogError } from "@/utils/handleAndLogError";
-import { desc, eq, like, or, sql } from "drizzle-orm";
+import { asc, desc, eq, like, or, sql } from "drizzle-orm";
 import type {
   CountsLast7DaysRoute,
   CountsRoute,
@@ -9,6 +9,7 @@ import type {
   DailyGamesNoGapsRoute,
   DailyGamesRoute,
   DailyRoute,
+  GetByChainIdentifierRoute,
   GetByIdentifierRoute,
   RecentRoute,
 } from "./outputs.routes";
@@ -35,6 +36,34 @@ export const getByIdentifier: AppRouteHandler<GetByIdentifierRoute> = async (c) 
     if (!output) {
       return c.json(null, 404);
     }
+
+    return c.json(output, 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const getByChainIdentifier: AppRouteHandler<GetByChainIdentifierRoute> = async (c) => {
+  const { chain_identifier } = c.req.valid("query");
+
+  try {
+    const output = await c.get("db").query.outputs.findMany({
+      columns: {
+        game: true,
+        segment: true,
+        language: true,
+        date: true,
+        identifier: true,
+        format: true,
+        paginationPage: true,
+        sortKey: true,
+        chainIdentifier: true,
+      },
+      // Exact match only
+      where: eq(outputs.chainIdentifier, chain_identifier),
+      // Oldest first
+      orderBy: asc(outputs.date),
+    });
 
     return c.json(output, 200);
   } catch (error: any) {

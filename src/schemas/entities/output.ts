@@ -34,13 +34,9 @@ export const OutputSchema = z.object({
     .nullable()
     .optional()
     .openapi({ description: "The sort key used. For array-based stats.", example: "kills" }),
-  chainIdentifier: z
-    .string()
-    .nullable()
-    .optional()
-    .openapi({
-      description:
-        "The identifier for the command pagination chain. Groups outputs across pagination and sort key changes.",
-      example: "Q9xCpni29DX5LaEVl_NmJ",
-    }),
+  chainIdentifier: z.string().nullable().optional().openapi({
+    description:
+      "The identifier for the command pagination chain. Groups outputs across pagination and sort key changes.",
+    example: "IiNS5QYqEPsLp_0SUR-oB",
+  }),
 });

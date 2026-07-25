@@ -16,7 +16,10 @@ export const getByIdentifier = createRoute({
   middleware: [cache("output-by-identifier", 60)],
   request: {
     query: z.object({
-      identifier: z.string().openapi({ description: "The full or partial identifier of the output.", example: "yim" }),
+      identifier: z
+        .string()
+        .min(3)
+        .openapi({ description: "The full or partial identifier of the output.", example: "yim" }),
     }),
   },
   responses: {
@@ -43,6 +46,44 @@ export const getByIdentifier = createRoute({
       content: {
         "application/json": {
           schema: z.null(),
+        },
+      },
+    },
+    500: standard500Response,
+  },
+});
+
+export const getByChainIdentifier = createRoute({
+  method: "get",
+  path: "/outputs/by-chain-identifier",
+  tags: ["Outputs"],
+  summary: "Output by chain identifier",
+  description: "Get an output by chain identifier.",
+  middleware: [cache("output-by-chain-identifier", 20)],
+  request: {
+    query: z.object({
+      chain_identifier: z.string().length(21).openapi({
+        description: "The full chain identifier of the output. Must be an exact match.",
+        example: "IiNS5QYqEPsLp_0SUR-oB",
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The outputs in the chain",
+      content: {
+        "application/json": {
+          schema: OutputSchema.pick({
+            game: true,
+            segment: true,
+            language: true,
+            date: true,
+            identifier: true,
+            format: true,
+            paginationPage: true,
+            sortKey: true,
+            chainIdentifier: true,
+          }).array(),
         },
       },
     },
@@ -270,6 +311,7 @@ export const create = createRoute({
 });
 
 export type GetByIdentifierRoute = typeof getByIdentifier;
+export type GetByChainIdentifierRoute = typeof getByChainIdentifier;
 export type RecentRoute = typeof recent;
 export type DailyRoute = typeof daily;
 export type DailyGamesRoute = typeof dailyGames;

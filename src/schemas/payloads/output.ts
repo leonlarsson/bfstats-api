@@ -19,6 +19,7 @@ export const OutputPayloadSchema = z
     format: z.enum(formats),
     paginationPage: z.number().positive().nullable().optional(),
     sortKey: z.string().nullable().optional(),
+    // Sent as a 21 char string from the bot. No need to verify length here surely
     chainIdentifier: z.string().nullable().optional(),
   })
   .openapi({
