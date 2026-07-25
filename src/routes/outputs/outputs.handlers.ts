@@ -1,7 +1,8 @@
 import { outputs } from "@/db/schema";
 import type { AppRouteHandler } from "@/types";
 import { handleAndLogError } from "@/utils/handleAndLogError";
-import { asc, desc, eq, like, or, sql } from "drizzle-orm";
+import { likeContains } from "@/utils/likeContains";
+import { asc, desc, eq, or, sql } from "drizzle-orm";
 import type {
   CountsLast7DaysRoute,
   CountsRoute,
@@ -30,7 +31,7 @@ export const getByIdentifier: AppRouteHandler<GetByIdentifierRoute> = async (c) 
         sortKey: true,
         chainIdentifier: true,
       },
-      where: or(eq(outputs.identifier, identifier), like(outputs.identifier, `%${identifier}%`)),
+      where: or(eq(outputs.identifier, identifier), likeContains(outputs.identifier, identifier)),
     });
 
     if (!output) {
