@@ -20,12 +20,14 @@ export const outputs = sqliteTable(
     format: text().notNull(),
     paginationPage: integer(),
     sortKey: text(),
+    chainIdentifier: text(),
   },
   (table) => {
     return {
       idxOutputsGameDate: index("idx_outputs_game_date").on(table.game, table.date),
       idxOutputsDate: index("idx_outputs_date").on(table.date),
       idxOutputsIdentifier: index("idx_outputs_identifier").on(table.identifier),
+      idxOutputsChainIdentifier: index("idx_outputs_chain_identifier").on(table.chainIdentifier),
     };
   },
 );

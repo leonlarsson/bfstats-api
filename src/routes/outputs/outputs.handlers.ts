@@ -26,7 +26,7 @@ export const getByIdentifier: AppRouteHandler<GetByIdentifierRoute> = async (c) 
         identifier: true,
         format: true,
         paginationPage: true,
-        sortKey: true
+        sortKey: true,
       },
       where: or(eq(outputs.identifier, identifier), like(outputs.identifier, `%${identifier}%`)),
     });
@@ -52,7 +52,7 @@ export const recent: AppRouteHandler<RecentRoute> = async (c) => {
         identifier: true,
         format: true,
         paginationPage: true,
-        sortKey: true
+        sortKey: true,
       },
       orderBy: desc(outputs.date),
       limit: 20,
@@ -201,6 +201,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
     format,
     paginationPage,
     sortKey,
+    chainIdentifier,
   } = c.req.valid("json");
 
   try {
@@ -220,6 +221,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
       format,
       paginationPage,
       sortKey,
+      chainIdentifier,
     });
 
     return c.text("ok", 201);

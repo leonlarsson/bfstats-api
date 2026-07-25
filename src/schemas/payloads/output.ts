@@ -19,6 +19,7 @@ export const OutputPayloadSchema = z
     format: z.enum(formats),
     paginationPage: z.number().positive().nullable().optional(),
     sortKey: z.string().nullable().optional(),
+    chainIdentifier: z.string().nullable().optional(),
   })
   .openapi({
     description: "The output data",
