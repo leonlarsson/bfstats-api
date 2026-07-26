@@ -28,3 +28,7 @@ To make a schema change (e.g. adding a column to `outputs`):
    npm run db:migration:apply:remote
    ```
    to apply it to the production D1 database.
+
+5. To let the API write the column, add it to `OutputPayloadSchema` in [src/schemas/payloads/output.ts](src/schemas/payloads/output.ts) using the same key name. Nothing catches it if you forget, the column just stays null on every insert.
+
+6. To expose it on the public output endpoints, add it to `OUTPUT_SUMMARY_COLUMNS` in [src/schemas/entities/output.ts](src/schemas/entities/output.ts), which covers both the query and the response schema.

@@ -2,7 +2,7 @@ import { authentication } from "@/middleware/authentication";
 import { cache } from "@/middleware/cache";
 import { EventSchema } from "@/schemas/entities/event";
 import { EventPayloadSchema } from "@/schemas/payloads/event";
-import { AppEvent } from "@/utils/constants";
+import { AppEvent, appEventValues } from "@/utils/constants";
 import { standard200Or201Response, standard500Response } from "@/utils/openApiStandards";
 import { createRoute, z } from "@hono/zod-openapi";
 
@@ -60,7 +60,7 @@ export const dailyEventsNoGaps = createRoute({
             .object({
               day: z.string().openapi({ description: "The day the event was recorded.", example: "2025-08-12" }),
               event: z
-                .enum(Object.values(AppEvent) as [string, ...string[]])
+                .enum(appEventValues)
                 .openapi({ description: "The event name.", example: AppEvent.AppUserInstall }),
               count: z
                 .number()

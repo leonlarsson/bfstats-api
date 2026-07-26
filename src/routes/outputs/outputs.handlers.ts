@@ -1,4 +1,5 @@
 import { outputs } from "@/db/schema";
+import { OUTPUT_SUMMARY_COLUMNS } from "@/schemas/entities/output";
 import type { AppRouteHandler } from "@/types";
 import { handleAndLogError } from "@/utils/handleAndLogError";
 import { likeContains } from "@/utils/likeContains";
@@ -20,17 +21,7 @@ export const getByIdentifier: AppRouteHandler<GetByIdentifierRoute> = async (c) 
 
   try {
     const output = await c.get("db").query.outputs.findFirst({
-      columns: {
-        game: true,
-        segment: true,
-        language: true,
-        date: true,
-        identifier: true,
-        format: true,
-        paginationPage: true,
-        sortKey: true,
-        chainIdentifier: true,
-      },
+      columns: OUTPUT_SUMMARY_COLUMNS,
       where: or(eq(outputs.identifier, identifier), likeContains(outputs.identifier, identifier)),
     });
 
@@ -49,17 +40,7 @@ export const getByChainIdentifier: AppRouteHandler<GetByChainIdentifierRoute> = 
 
   try {
     const output = await c.get("db").query.outputs.findMany({
-      columns: {
-        game: true,
-        segment: true,
-        language: true,
-        date: true,
-        identifier: true,
-        format: true,
-        paginationPage: true,
-        sortKey: true,
-        chainIdentifier: true,
-      },
+      columns: OUTPUT_SUMMARY_COLUMNS,
       // Exact match only
       where: eq(outputs.chainIdentifier, chain_identifier),
       // Oldest first
@@ -75,17 +56,7 @@ export const getByChainIdentifier: AppRouteHandler<GetByChainIdentifierRoute> = 
 export const recent: AppRouteHandler<RecentRoute> = async (c) => {
   try {
     const results = await c.get("db").query.outputs.findMany({
-      columns: {
-        game: true,
-        segment: true,
-        language: true,
-        date: true,
-        identifier: true,
-        format: true,
-        paginationPage: true,
-        sortKey: true,
-        chainIdentifier: true,
-      },
+      columns: OUTPUT_SUMMARY_COLUMNS,
       orderBy: desc(outputs.date),
       limit: 20,
     });
@@ -217,44 +188,9 @@ ORDER BY category ASC, sent DESC;
 };
 
 export const create: AppRouteHandler<CreateRoute> = async (c) => {
-  const {
-    userId,
-    username,
-    guildName,
-    guildId,
-    game,
-    segment,
-    language,
-    messageUrl,
-    imageUrl,
-    identifier,
-    isMyStats,
-    platform,
-    format,
-    paginationPage,
-    sortKey,
-    chainIdentifier,
-  } = c.req.valid("json");
-
   try {
-    await c.get("db").insert(outputs).values({
-      userId,
-      username,
-      guildName,
-      guildId,
-      game,
-      segment,
-      language,
-      messageUrl,
-      imageUrl,
-      identifier,
-      isMyStats,
-      platform,
-      format,
-      paginationPage,
-      sortKey,
-      chainIdentifier,
-    });
+    // The payload keys match the table columns, so no mapping is needed.
+    await c.get("db").insert(outputs).values(c.req.valid("json"));
 
     return c.text("ok", 201);
   } catch (error: any) {

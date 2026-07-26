@@ -1,4 +1,9 @@
+import { GAMES, LANGUAGES } from "@/utils/constants";
 import { z } from "zod";
+
+// Builds an object of integer counters, one per key, keeping the key names as literals.
+const counterRecord = <T extends readonly [string, ...string[]]>(keys: T) =>
+  z.object(Object.fromEntries(keys.map((key) => [key, z.number().int()])) as { [K in T[number]]: z.ZodNumber });
 
 export const BaseDataSchema = z.object({
   totalGuilds: z.number().int(),
@@ -7,36 +12,8 @@ export const BaseDataSchema = z.object({
   totalMembers: z.number().int(),
   totalStatsSent: z.object({
     total: z.number().int(),
-    games: z.object({
-      "Battlefield 6": z.number().int(),
-      "Battlefield 2042": z.number().int(),
-      "Battlefield V": z.number().int(),
-      "Battlefield 1": z.number().int(),
-      "Battlefield Hardline": z.number().int(),
-      "Battlefield 4": z.number().int(),
-      "Battlefield 3": z.number().int(),
-      "Battlefield Bad Company 2": z.number().int(),
-      "Battlefield 2": z.number().int(),
-    }),
-    languages: z.object({
-      English: z.number().int(),
-      French: z.number().int(),
-      Italian: z.number().int(),
-      German: z.number().int(),
-      Spanish: z.number().int(),
-      Russian: z.number().int(),
-      Polish: z.number().int(),
-      "Brazilian Portuguese": z.number().int(),
-      Turkish: z.number().int(),
-      Swedish: z.number().int(),
-      Norwegian: z.number().int(),
-      Danish: z.number().int(),
-      Finnish: z.number().int(),
-      Arabic: z.number().int(),
-      Chinese: z.number().int(),
-      Dutch: z.number().int(),
-      Japanese: z.number().int(),
-    }),
+    games: counterRecord(GAMES),
+    languages: counterRecord(LANGUAGES),
   }),
   lastUpdated: z.object({
     date: z.string(),
