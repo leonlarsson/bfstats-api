@@ -58,7 +58,7 @@ export const recent: AppRouteHandler<RecentRoute> = async (c) => {
     const results = await c.get("db").query.outputs.findMany({
       columns: OUTPUT_SUMMARY_COLUMNS,
       orderBy: desc(outputs.date),
-      limit: 20,
+      limit: 40,
     });
     return c.json(results, 200);
   } catch (error: any) {
