@@ -99,15 +99,15 @@ export const recent = createRoute({
   path: "/outputs/recent",
   tags: ["Outputs"],
   summary: "Recent outputs",
-  description: "Get the 20 most recent outputs.",
+  description: "Get the 40 most recent outputs.",
   middleware: [cache("outputs-recent", 1)],
   responses: {
     200: {
-      description: "The 20 most recent outputs",
+      description: "The 40 most recent outputs",
       content: {
         "application/json": {
           schema: OutputSummarySchema.array().openapi({
-            description: "The 20 most recent outputs.",
+            description: "The 40 most recent outputs.",
             example: [
               {
                 game: "Battlefield 2042",
