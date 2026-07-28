@@ -11,4 +11,5 @@ export const usersRouter = createRouter()
   .openapi(routes.getRecentUsernamesByGameAndPlatform, handlers.getRecentUsernamesByGameAndPlatform)
   .openapi(routes.getLinks, handlers.getLinks)
   .openapi(routes.putLink, handlers.putLink)
-  .openapi(routes.deleteLink, handlers.deleteLink);
+  .openapi(routes.deleteLink, handlers.deleteLink)
+  .openapi(routes.redact, handlers.redact);

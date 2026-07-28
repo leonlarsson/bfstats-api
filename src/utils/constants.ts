@@ -6,6 +6,7 @@ export const AppEvent = {
   BfAccountLink: "bfAccountLink",
   BfAccountUnlink: "bfAccountUnlink",
   ApiImageGenerated: "apiImageGenerated",
+  UserDataRedacted: "userDataRedacted",
 } as const;
 
 // Typed as string, not the union, so values read from the DB still fit the response schemas.

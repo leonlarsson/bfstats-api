@@ -32,3 +32,15 @@ To make a schema change (e.g. adding a column to `outputs`):
 5. To let the API write the column, add it to `OutputPayloadSchema` in [src/schemas/payloads/output.ts](src/schemas/payloads/output.ts) using the same key name. Nothing catches it if you forget, the column just stays null on every insert.
 
 6. To expose it on the public output endpoints, add it to `OUTPUT_SUMMARY_COLUMNS` in [src/schemas/entities/output.ts](src/schemas/entities/output.ts), which covers both the query and the response schema.
+
+## Data redaction
+
+User data redactions are done via `POST /users/{discordId}/redact`. Verify identity on Discord first.
+
+Cloudflare retains D1 and DO data for PITR for 30 days.
+
+The response reports what was removed, counted before the writes.
+
+`outputs` and `users` rows are kept but `user_id` and `username` are anonymized. Guild and URL columns are cleared. The user's Durable Object, linked accounts and searches, is wiped. An `events` row records the redaction without the ID.
+
+One token per redaction, so `SELECT ... WHERE user_id = '<token>'` finds that redaction's rows again, but no direct identifiers are left. Should the user start using the bot again, new data will be recorded fresh.

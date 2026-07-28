@@ -20,13 +20,25 @@ export const UserLinksSchema = z.record(z.string(), UserLinkSchema);
 export type UserLink = z.infer<typeof UserLinkSchema>;
 export type UserLinks = z.infer<typeof UserLinksSchema>;
 
+export type UserDOSummary = {
+  links: number;
+  searches: number;
+};
+
 export class UserDurableObject extends DurableObject {
   sql: SqlStorage;
+  private schemaReady = false;
+
   constructor(state: DurableObjectState, env: CloudflareBindings) {
     super(state, env);
     this.sql = this.ctx.storage.sql;
+    this.ensureSchema();
+  }
 
-    // Create the table if it doesn't exist
+  // Called before any SQL operations
+  private ensureSchema(): void {
+    if (this.schemaReady) return;
+
     this.sql.exec(`
       CREATE TABLE IF NOT EXISTS searches (
         game TEXT,
@@ -38,11 +50,13 @@ export class UserDurableObject extends DurableObject {
       );
     `);
 
-    // Create the index if it doesn't exist
     this.sql.exec(`
         CREATE INDEX IF NOT EXISTS idx_created_at ON searches (created_at);
     `);
+
+    this.schemaReady = true;
   }
+
   async getLinks(): Promise<UserLinks> {
     const links = await this.ctx.storage.get<UserLinks>("links");
     return UserLinksSchema.parse(links || {});
@@ -61,6 +75,7 @@ export class UserDurableObject extends DurableObject {
   }
 
   getRecentUsernamesByGameAndPlatform(game: string, platform: string): string[] {
+    this.ensureSchema();
     const usernames = this.ctx.storage.sql
       .exec<{ username: string }>(
         "SELECT username FROM searches WHERE game = ? AND platform = ? ORDER BY created_at DESC LIMIT 5",
@@ -72,11 +87,25 @@ export class UserDurableObject extends DurableObject {
   }
 
   addSearch(game: string, username: string, platform: string): void {
+    this.ensureSchema();
     this.ctx.storage.sql.exec(
       "INSERT INTO searches (game, username, platform) VALUES (?, ?, ?)",
       game,
       username,
       platform,
     );
+  }
+
+  // deleteAll() is the only complete reset
+  async deleteAllData(): Promise<UserDOSummary> {
+    this.ensureSchema();
+    const links = await this.getLinks();
+    const [row] = this.sql.exec<{ count: number }>("SELECT COUNT(*) AS count FROM searches").toArray();
+    const deleted = { links: Object.keys(links).length, searches: row?.count ?? 0 };
+
+    await this.ctx.storage.deleteAll();
+    this.schemaReady = false;
+
+    return deleted;
   }
 }

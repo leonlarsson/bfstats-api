@@ -13,6 +13,7 @@ import type {
   GetLinksRoute,
   GetRecentUsernamesByGameAndPlatformRoute,
   PutLinkRoute,
+  RedactRoute,
   TopRoute,
   UsageByUserIdRoute,
 } from "./users.routes";
@@ -172,6 +173,49 @@ export const getRecentUsernamesByGameAndPlatform: AppRouteHandler<GetRecentUsern
     const stub = getUserDOStub(c.env, discordId);
     const recentUsernames = await stub.getRecentUsernamesByGameAndPlatform(game, platform);
     return c.json(recentUsernames as string[], 200);
+  } catch (error: any) {
+    return handleAndLogError(c, error);
+  }
+};
+
+export const redact: AppRouteHandler<RedactRoute> = async (c) => {
+  const { discordId } = c.req.valid("param");
+
+  try {
+    const db = c.get("db");
+    const redactToken = `redacted:${crypto.randomUUID()}`;
+
+    const [outputsResult, usersResult] = await db.batch([
+      db
+        .update(outputs)
+        .set({
+          userId: redactToken,
+          username: redactToken,
+          guildId: null,
+          guildName: null,
+          messageUrl: null,
+          imageUrl: null,
+        })
+        .where(eq(outputs.userId, discordId)),
+      db.update(users).set({ userId: redactToken, username: redactToken }).where(eq(users.userId, discordId)),
+      // Just a name and a timestamp. Recording who would re-store the ID we removed.
+      db
+        .insert(events)
+        .values({ event: AppEvent.UserDataRedacted }),
+    ]);
+
+    const { links, searches } = await getUserDOStub(c.env, discordId).deleteAllData();
+
+    return c.json(
+      {
+        redactToken,
+        outputRowsRedacted: outputsResult.meta.changes,
+        userRowsRedacted: usersResult.meta.changes,
+        linksDeleted: links,
+        searchesDeleted: searches,
+      },
+      200,
+    );
   } catch (error: any) {
     return handleAndLogError(c, error);
   }

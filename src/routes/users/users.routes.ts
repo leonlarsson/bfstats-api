@@ -258,6 +258,42 @@ export const getRecentUsernamesByGameAndPlatform = createRoute({
   },
 });
 
+export const redact = createRoute({
+  method: "post",
+  path: "/users/{discordId}/redact",
+  tags,
+  summary: "Redact a user's data",
+  description: "Redact a user's identifiable data. The API cannot undo this.",
+  middleware: [authentication],
+  request: {
+    params: z.object({
+      discordId: z.string().openapi({ description: "The Discord ID of the user." }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The redaction was applied",
+      content: {
+        "application/json": {
+          schema: z.object({
+            redactToken: z.string().openapi({
+              description: "The token their ID and username were replaced with.",
+              example: "redacted:<random-UUID>",
+            }),
+            outputRowsRedacted: z
+              .number()
+              .openapi({ description: "Rows redacted in the outputs table.", example: 124 }),
+            userRowsRedacted: z.number().openapi({ description: "Rows redacted in the users table.", example: 1 }),
+            linksDeleted: z.number().openapi({ description: "Linked Battlefield accounts deleted.", example: 3 }),
+            searchesDeleted: z.number().openapi({ description: "Recorded username searches deleted.", example: 8 }),
+          }),
+        },
+      },
+    },
+    500: standard500Response,
+  },
+});
+
 export type CountRoute = typeof count;
 export type TopRoute = typeof top;
 export type UsageByUserIdRoute = typeof usageByUserId;
@@ -267,3 +303,4 @@ export type GetLinksRoute = typeof getLinks;
 export type PutLinkRoute = typeof putLink;
 export type DeleteLinkRoute = typeof deleteLink;
 export type GetRecentUsernamesByGameAndPlatformRoute = typeof getRecentUsernamesByGameAndPlatform;
+export type RedactRoute = typeof redact;
