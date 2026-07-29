@@ -141,9 +141,41 @@ export const dailyGamesNoGaps: AppRouteHandler<DailyGamesNoGapsRoute> = async (c
 };
 
 export const counts: AppRouteHandler<CountsRoute> = async (c) => {
+  const { days, offset } = c.req.valid("query");
+
+  /**
+   No params at all means all time. Passing either narrows it to a window covering `days` calendar dates, ending `offset` days ago.
+   `date` is compared bare so idx_outputs_date can be used. The stored 'YYYY-MM-DD HH:MM:SS' format sorts chronologically as text
+   */
+  const whereClause =
+    days === undefined && offset === undefined
+      ? ""
+      : `WHERE date >= date('now', '-${(days ?? 7) - 1 + (offset ?? 0)} days') AND date < date('now', '-${offset ?? 0} days', '+1 day')`;
+
   try {
     const { results } = await c.env.DB.prepare(
-      "SELECT 'game' as category, game as item, COUNT(*) as sent FROM outputs GROUP BY game UNION ALL SELECT 'segment' as category, segment as item, COUNT(*) as sent FROM outputs GROUP BY segment UNION ALL SELECT 'language' as category, language as item, COUNT(*) as sent FROM outputs GROUP BY language ORDER BY category ASC, sent DESC",
+      `
+SELECT 'game' as category, game as item, COUNT(*) as sent
+FROM outputs
+${whereClause}
+GROUP BY game
+
+UNION ALL
+
+SELECT 'segment' as category, segment as item, COUNT(*) as sent
+FROM outputs
+${whereClause}
+GROUP BY segment
+
+UNION ALL
+
+SELECT 'language' as category, language as item, COUNT(*) as sent
+FROM outputs
+${whereClause}
+GROUP BY language
+
+ORDER BY category ASC, sent DESC;
+`,
     ).all();
 
     return c.json(results, 200);

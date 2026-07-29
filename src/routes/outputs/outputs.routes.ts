@@ -1,11 +1,18 @@
 import { authentication } from "@/middleware/authentication";
 import { cache } from "@/middleware/cache";
+import { withSearchParams } from "@/middleware/withSearchParams";
 import { OutputSummarySchema } from "@/schemas/entities/output";
 import { OutputPayloadSchema } from "@/schemas/payloads/output";
 import { standard200Or201Response, standard500Response } from "@/utils/openApiStandards";
 import { createRoute, z } from "@hono/zod-openapi";
 
 const tags = ["Outputs"];
+
+/** How far back a windowed /outputs/counts request is allowed to look, in days. */
+const MAX_LOOKBACK_DAYS = 366;
+
+/** Query params /outputs/counts reads. Everything else is stripped before caching. */
+const COUNTS_ALLOWED_PARAMS = ["days", "offset"];
 
 // Shared by /outputs/daily-games and /outputs/daily-games-no-gaps.
 const DailyGamesSchema = z
@@ -211,8 +218,39 @@ export const counts = createRoute({
   path: "/outputs/counts",
   tags,
   summary: "Output counts",
-  description: "Get basic usage data per game, segment, and language.",
-  middleware: [cache("outputs-counts", 20)],
+  description:
+    "Get basic usage data per game, segment, and language. Covers all time by default. Pass days and/or offset to narrow it to a window, e.g. days=7 for the last 7 days, or days=7&offset=7 for the 7 days before that.",
+  middleware: [withSearchParams(COUNTS_ALLOWED_PARAMS), cache("outputs-counts", 20)],
+  request: {
+    query: z
+      .object({
+        days: z.coerce
+          .number()
+          .int()
+          .min(1)
+          .max(MAX_LOOKBACK_DAYS)
+          .optional()
+          .openapi({
+            description: `The number of days the window covers. Max ${MAX_LOOKBACK_DAYS}. Omit both params for all time.`,
+            example: 7,
+          }),
+        offset: z.coerce
+          .number()
+          .int()
+          .min(0)
+          .max(MAX_LOOKBACK_DAYS - 1)
+          .optional()
+          .openapi({
+            description: "How many days back the window ends. 0 means the window ends today. Defaults to 7 days.",
+            example: 7,
+          }),
+      })
+      // Together they cannot reach further back than MAX_LOOKBACK_DAYS.
+      .refine((q) => (q.days ?? 7) + (q.offset ?? 0) <= MAX_LOOKBACK_DAYS, {
+        message: `days + offset cannot exceed ${MAX_LOOKBACK_DAYS}`,
+        path: ["days"],
+      }),
+  },
   responses: {
     200: {
       description: "The usage data",
