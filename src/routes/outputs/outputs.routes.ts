@@ -264,27 +264,6 @@ export const counts = createRoute({
   },
 });
 
-export const countsLast7Days = createRoute({
-  method: "get",
-  path: "/outputs/counts-last-7-days",
-  tags,
-  summary: "Output counts (7 days)",
-  description: "Get basic usage data per game, segment, and language for the last 7 days.",
-  // Longer cache time because this is pretty much only used for the header stat on battlefieldstats.ciom and the top game is unlikely to change often
-  middleware: [cache("outputs-counts-last-7-days", 60)],
-  responses: {
-    200: {
-      description: "The usage data",
-      content: {
-        "application/json": {
-          schema: CountsSchema,
-        },
-      },
-    },
-    500: standard500Response,
-  },
-});
-
 export const create = createRoute({
   method: "post",
   path: "/outputs",
@@ -314,5 +293,4 @@ export type DailyRoute = typeof daily;
 export type DailyGamesRoute = typeof dailyGames;
 export type DailyGamesNoGapsRoute = typeof dailyGamesNoGaps;
 export type CountsRoute = typeof counts;
-export type CountsLast7DaysRoute = typeof countsLast7Days;
 export type CreateRoute = typeof create;

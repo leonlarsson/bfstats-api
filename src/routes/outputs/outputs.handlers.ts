@@ -5,7 +5,6 @@ import { handleAndLogError } from "@/utils/handleAndLogError";
 import { likeContains } from "@/utils/likeContains";
 import { asc, desc, eq, or, sql } from "drizzle-orm";
 import type {
-  CountsLast7DaysRoute,
   CountsRoute,
   CreateRoute,
   DailyGamesNoGapsRoute,
@@ -171,41 +170,6 @@ UNION ALL
 
 SELECT 'language' as category, language as item, COUNT(*) as sent
 FROM outputs
-${whereClause}
-GROUP BY language
-
-ORDER BY category ASC, sent DESC;
-`,
-    ).all();
-
-    return c.json(results, 200);
-  } catch (error: any) {
-    return handleAndLogError(c, error);
-  }
-};
-
-export const countsLast7Days: AppRouteHandler<CountsLast7DaysRoute> = async (c) => {
-  const whereClause = "WHERE date(strftime('%Y-%m-%d', datetime(date))) >= date('now', '-7 days')";
-
-  try {
-    const { results } = await c.env.DB.prepare(
-      `
-SELECT 'game' as category, game as item, COUNT(*) as sent 
-FROM outputs 
-${whereClause}
-GROUP BY game
-
-UNION ALL
-
-SELECT 'segment' as category, segment as item, COUNT(*) as sent 
-FROM outputs 
-${whereClause}
-GROUP BY segment
-
-UNION ALL
-
-SELECT 'language' as category, language as item, COUNT(*) as sent 
-FROM outputs 
 ${whereClause}
 GROUP BY language
 

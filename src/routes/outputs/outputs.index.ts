@@ -10,5 +10,4 @@ export const outputsRouter = createRouter()
   .openapi(routes.dailyGames, handlers.dailyGames)
   .openapi(routes.dailyGamesNoGaps, handlers.dailyGamesNoGaps)
   .openapi(routes.counts, handlers.counts)
-  .openapi(routes.countsLast7Days, handlers.countsLast7Days)
   .openapi(routes.create, handlers.create);
